@@ -5,38 +5,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JG Games</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Raleway:wght@200;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="tsparticles"></div>
+    
+    <nav class="main-nav">
+        <div class="nav-container">
+            <img id="studio-logo" src="logo.png" alt="JG Games Logo">
+            <div class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="#games">Our Game</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="content-container">
-        <!-- JG Games Logo could go here if desired, kept minimal for now -->
-        <img id="studio-logo" src="assets/logo.png" alt="JG Games Logo">
+        <section id="home" class="hero-section">
+            <div class="hero-content">
+                <h1 class="glitch-text" data-text="JG GAMES">JG GAMES</h1>
+                <div class="tagline">
+                    <p class="reveal-text">CREATOR OF FALL OF AN EMPIRE</p>
+                </div>
+                <div class="cta-container">
+                    <a href="#games" class="cta-button">DISCOVER THE GAME</a>
+                </div>
+            </div>
+        </section>
 
-        <header class="studio-intro">
-            <p>Welcome to JG Games, the studio behind Fall of an Empire.</p> <!-- Placeholder intro -->
-        </header>
+        <section id="games" class="games-section section-white">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2>FALL OF AN EMPIRE</h2>
+                <div class="section-line"></div>
+            </div>
+            
+            <div class="game-showcase">
+                <div class="game-info-container">
+                    <div class="game-logo">
+                        <img src="foae-logo.png" alt="Fall of an Empire Logo">
+                    </div>
+                    
+                    <div class="game-details">
+                        <h3>A Survival Strategy Epic</h3>
+                        <p class="game-description">
+                            Your empire is slowly falling. Bickering vassals and barbarian hordes threaten to bring about its destruction. 
+                            Thousands of years of history have led you to this point, can you be the one to halt its decline?
+                        </p>
+                        
+                        <div class="game-features">
+                            <div class="feature">
+                                <i class="fas fa-crown"></i>
+                                <span>Rule a Crumbling Empire</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-chess-knight"></i>
+                                <span>Command Epic Battles</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-map-marked-alt"></i>
+                                <span>Explore a Massive World</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-users"></i>
+                                <span>Complex Character Interactions</span>
+                            </div>
+                        </div>
+                        
+                        <p class="game-unique-selling-point">
+                            Unlike traditional strategy games, you can't win. Your empire <em>will</em> fall—it's just a matter of how long you can delay the inevitable.
+                        </p>
+                        
+                        <div class="game-cta">
+                            <a href="https://fallofanempiregame.com" target="_blank" rel="noopener noreferrer" class="primary-button">VISIT OFFICIAL SITE</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-details-extended">
+                    <div class="detail-column">
+                        <h4><i class="fas fa-shield-alt"></i> Defend Your Empire</h4>
+                        <p>Manage the Empire's dwindling resources. Upgrade settlements to withstand those who seek to destroy you. Command your Imperial legions, recruit armies, and crush your foes—though be sure your strategies aren't outmatched by your enemies.</p>
+                    </div>
+                    
+                    <div class="detail-column">
+                        <h4><i class="fas fa-globe-europe"></i> A Massive World</h4>
+                        <p>Rule almost 150 settlements with millions of citizens. Feel the gravity of your rule as you watch seasons change through harsh winters and bountiful springs. Experience a truly immersive imperial world.</p>
+                    </div>
+                    
+                    <div class="detail-column">
+                        <h4><i class="fas fa-chess"></i> Unique Battles</h4>
+                        <p>Fight enemies on a real-time strategic level with a unique timed turn-based battle system. Choose which conflicts deserve your attention while waging war across all points of your empire simultaneously.</p>
+                    </div>
+                    
+                    <div class="detail-column">
+                        <h4><i class="fas fa-book"></i> Expansive Lore</h4>
+                        <p>Uncover the history of the world through events and dialog. Learn the secrets of your forebears and the complex world you inhabit. Do you have what it takes to make the decisions of an Emperor?</p>
+                    </div>
+                </div>
+                
+                <div class="trailer-container" id="trailer">
+                    <h3 class="trailer-title">Official Trailer</h3>
+                    <div class="video-container">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/EAw7MXX3nyE" title="Fall of an Empire Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <main>
-            <section class="game-card">
-                <img src="assets/foae-logo.png" alt="Fall of an Empire Logo">
-                <h2>Fall of an Empire</h2>
+        <section id="contact" class="contact-section">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2>GET IN TOUCH</h2>
+                <div class="section-line"></div>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>contact@jggames.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Digital Realm</span>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-steam"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer-white">
+            <div class="footer-content">
+                <p>&copy; 2025 JG Games. All rights reserved.</p>
                 <p>
-                    Take control of a vast and ancient realm in this real-time grand strategy game.
-                    Barbarians attack your frontiers and treacherous vassals plot against you.
-                    You know your crumbling empire won't last forever, but it's up to you to see how long you can save it.
+                    <a href="https://jgibbs.dev" target="_blank" rel="noopener noreferrer">jgibbs.dev</a>
                 </p>
-                <a href="https://fallofanempiregame.com" target="_blank" rel="noopener noreferrer">Visit Game Website</a>
-            </section>
-        </main>
-
-        <footer>
-            <p>&copy; 2025 JG Games</p>
-            <p>
-                <a href="https://jgibbs.dev" target="_blank" rel="noopener noreferrer">jgibbs.dev</a>
-            </p>
+            </div>
         </footer>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html> 
