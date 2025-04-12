@@ -1,0 +1,19 @@
+{
+  "name": "jg-games-site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tsparticles/basic": "^3.8.1",
+    "@tsparticles/engine": "^3.8.1",
+    "vite": "^6.2.6"
+  }
+}
