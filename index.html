@@ -9,7 +9,7 @@
     <title>JG Games</title>
     <meta
       name="description"
-      content="JG Games is an independent game studio by Joe Gibbs, creator of Fall of an Empire - a grand strategy 4X game where you manage a crumbling empire.."
+      content="JG Games is an independent game studio by Joe Gibbs, creator of Fall of an Empire - a grand strategy 4X game where you manage a crumbling empire."
     />
     <meta
       name="keywords"
@@ -42,159 +42,14 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&amp;family=Montserrat:wght@300;400;600&amp;display=swap"
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Montserrat:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
-    <script
-      type="module"
-      crossorigin=""
-      src="/assets/index-g88pfMBV.js"
-    ></script>
-    <link rel="stylesheet" crossorigin="" href="/assets/index-CnLoI5hM.css" />
   </head>
   <body>
-    <div id="root">
-      <main>
-        <div class="intro-overlay">
-          <video src="/logo.mp4" class="intro-video" playsinline=""></video>
-        </div>
-        <section class="full-height bg-black text-center">
-          <div class="hero-content">
-            <img alt="JG Games Logo" class="hero-logo" src="/logo.png" />
-            <div class="fade-in-section" style="transition-delay: 500ms">
-              <h1 class="title">JG Games</h1>
-            </div>
-          </div>
-        </section>
-        <section
-          class="full-height game-section relative"
-          style="
-            justify-content: center;
-            align-items: flex-start;
-            display: flex;
-          "
-        >
-          <div class="video-background">
-            <video autoplay="" loop="" playsinline="" class="bg-video">
-              <source src="/seasons.webm" type="video/webm" />
-            </video>
-            <div class="vignette-overlay"></div>
-          </div>
-          <div
-            class="content-relative z-10 text-left"
-            style="width: 100%; padding-left: 5rem; box-sizing: border-box"
-          >
-            <div class="fade-in-section" style="transition-delay: 0ms">
-              <h2
-                class="title text-white drop-shadow"
-                style="text-align: left; margin: 0px"
-              >
-                Fall of an Empire
-              </h2>
-              <p
-                class="subtitle text-white drop-shadow"
-                style="
-                  max-width: 700px;
-                  margin: 1.5rem 0px;
-                  text-align: left;
-                  line-height: 1.6;
-                "
-              >
-                The empire is dying. You’ve seized the throne. Survival is
-                victory.
-              </p>
-              <p
-                class="subtitle text-white drop-shadow"
-                style="
-                  max-width: 650px;
-                  font-size: 1.1rem;
-                  margin: 0px 0px 2rem;
-                  text-align: left;
-                  line-height: 1.6;
-                  opacity: 0.9;
-                "
-              >
-                Defy history in a grand strategy game of survival. Manage a
-                crumbling realm, navigate treacherous politics, and hold back
-                the inevitable collapse. Your rule will not last forever - how
-                long can you halt the decline?
-              </p>
-              <div class="btn-group" style="justify-content: flex-start">
-                <a
-                  href="https://store.steampowered.com/app/1830290/Fall_of_an_Empire/"
-                  class="btn text-white border-white hover:bg-white hover:text-black"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >Steam</a
-                ><a
-                  href="https://fallofanempiregame.com/"
-                  class="btn text-white border-white hover:bg-white hover:text-black"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >Website</a
-                >
-              </div>
-            </div>
-          </div>
-        </section>
-        <section
-          class="full-height bg-black"
-          style="position: relative; overflow: hidden"
-        >
-          <div
-            style="
-              position: absolute;
-              top: 0px;
-              left: 0px;
-              width: 100%;
-              height: 100%;
-              z-index: 0;
-            "
-          >
-            <canvas
-              width="800"
-              height="600"
-              style="width: 100%; height: 100%; display: block"
-            ></canvas>
-          </div>
-          <div
-            style="
-              position: relative;
-              z-index: 1;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              height: 100%;
-              padding: 2rem;
-            "
-          >
-            <div class="fade-in-section" style="transition-delay: 0ms">
-              <h2 class="title text-center">Connect</h2>
-              <div class="contact-links" style="margin-top: 2rem">
-                <a href="mailto:contact@jggames.dev" class="contact-item"
-                  ><span class="label">Email</span
-                  ><span class="value">contact@jggames.dev</span></a
-                ><a
-                  href="https://jgibbs.dev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="contact-item"
-                  ><span class="label">Portfolio</span
-                  ><span class="value">jgibbs.dev</span></a
-                >
-              </div>
-            </div>
-            <div class="fade-in-section" style="transition-delay: 400ms">
-              <footer class="main-footer">
-                © 2025 Joe Gibbs. All rights reserved.
-              </footer>
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
