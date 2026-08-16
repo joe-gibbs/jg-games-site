@@ -7,13 +7,17 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:webkiln-docs": "node scripts/sync-webkiln-docs.mjs"
   },
   "dependencies": {
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
+    "highlight.js": "^11.11.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "tsparticles": "^3.9.1"
   },
   "devDependencies": {

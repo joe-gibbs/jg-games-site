@@ -1,15 +1,19 @@
-import React from 'react';
-import FadeIn from './FadeIn';
+import React from "react";
 
 const Hero: React.FC = () => {
   return (
-    <section className="full-height bg-black text-center">
-      <div className="hero-content">
-        <img src="/logo.png" alt="JG Games Logo" className="hero-logo" />
-        
-        <FadeIn delay={500}>
-            <h1 className="title">JG Games</h1>
-        </FadeIn>
+    <section className="hero" id="top">
+      <div className="hero-inner shell">
+        <div className="hero-brand">
+          <img src="/logo.png" alt="" className="hero-logo" />
+          <h1 className="hero-title">JG Games</h1>
+        </div>
+
+        <nav className="hero-nav" aria-label="Main sections">
+          <a href="#fall-of-an-empire">Fall of an Empire</a>
+          <a href="/webkiln/">Webkiln</a>
+          <a href="#contact">Contact</a>
+        </nav>
       </div>
     </section>
   );

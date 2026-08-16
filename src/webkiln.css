@@ -1,0 +1,317 @@
+.wk-site-header {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(1.25rem, 4vw, 4rem);
+  border-bottom: 1px solid var(--line);
+  background: #0c0a08;
+}
+
+.wk-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: "Marcellus", serif;
+  font-size: 1.15rem;
+}
+
+.wk-brand img {
+  width: 34px;
+  height: 34px;
+}
+
+.wk-site-header nav,
+.wk-footer nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.5vw, 2.25rem);
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.wk-site-header nav a:hover,
+.wk-footer nav a:hover {
+  color: var(--orange-light);
+}
+
+.wk-page {
+  overflow: hidden;
+}
+
+.wk-hero {
+  display: grid;
+  width: min(1320px, calc(100% - 5rem));
+  min-height: calc(100dvh - 68px);
+  margin: 0 auto;
+  padding: clamp(5rem, 10vw, 9rem) 0;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(4rem, 8vw, 8rem);
+  align-items: center;
+}
+
+.wk-hero-copy h1 {
+  max-width: 780px;
+  margin-top: 1rem;
+  font-size: clamp(3.5rem, 7vw, 7rem);
+  letter-spacing: -0.035em;
+}
+
+.wk-hero-copy > p {
+  max-width: 610px;
+  margin-top: 1.5rem;
+  color: var(--ink-soft);
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  font-weight: 300;
+}
+
+.wk-hero-figure {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--line);
+  background: #090908;
+}
+
+.wk-hero-figure::before {
+  position: absolute;
+  z-index: 1;
+  top: -1px;
+  left: -1px;
+  width: 42%;
+  height: 2px;
+  background: var(--orange);
+  content: "";
+}
+
+.wk-hero-figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: left top;
+}
+
+.wk-hero-figure figcaption {
+  padding: 0.8rem 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--ink-faint);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
+.wk-capabilities {
+  width: min(1180px, calc(100% - 4rem));
+  margin: 0 auto;
+  padding: clamp(7rem, 13vw, 11rem) 0;
+}
+
+.wk-capabilities > header {
+  max-width: 760px;
+}
+
+.wk-capabilities h2,
+.wk-statement h2,
+.wk-cta h2 {
+  margin-top: 0.85rem;
+  font-size: clamp(2.6rem, 5.5vw, 5rem);
+}
+
+.wk-capabilities > header p,
+.wk-statement-inner > p {
+  max-width: 62ch;
+  margin-top: 1.25rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+}
+
+.wk-capability-grid {
+  display: grid;
+  margin-top: clamp(4rem, 7vw, 6rem);
+  border-top: 1px solid var(--line);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.wk-capability-grid article {
+  min-height: 245px;
+  padding: 1.75rem 2rem 2rem 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.wk-capability-grid article:nth-child(3n + 2),
+.wk-capability-grid article:nth-child(3n + 3) {
+  padding-left: 2rem;
+}
+
+.wk-capability-grid article:nth-child(3n) {
+  border-right: 0;
+}
+
+.wk-capability-grid h3 {
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+}
+
+.wk-capability-grid p {
+  margin-top: 0.8rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+}
+
+.wk-statement {
+  padding: clamp(6rem, 11vw, 9rem) max(2rem, calc((100vw - 1180px) / 2));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-raised);
+}
+
+.wk-statement-inner {
+  max-width: 900px;
+}
+
+.wk-text-link {
+  display: inline-block;
+  margin-top: 2rem;
+  color: var(--orange-light);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.wk-text-link::after {
+  margin-left: 0.65rem;
+  content: "→";
+}
+
+.wk-page .webkiln-examples {
+  border-top: 0;
+}
+
+.wk-page .webkiln-fps-example {
+  border-top: 1px solid var(--line);
+  border-bottom: 0;
+}
+
+.wk-page .examples-heading {
+  padding-top: clamp(7rem, 13vw, 11rem);
+  padding-bottom: clamp(6rem, 10vw, 8rem);
+}
+
+.wk-cta {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4rem;
+  padding: clamp(6rem, 11vw, 9rem) max(2rem, calc((100vw - 1180px) / 2));
+  border-top: 1px solid var(--line);
+  background: var(--bg-raised);
+}
+
+.wk-cta > div:first-child {
+  max-width: 760px;
+}
+
+.wk-cta .btn-group {
+  flex: 0 0 auto;
+}
+
+.wk-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem max(2rem, calc((100vw - 1180px) / 2));
+  border-top: 1px solid var(--line);
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 900px) {
+  .wk-site-header {
+    position: relative;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .wk-site-header nav {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
+  }
+
+  .wk-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .wk-hero {
+    width: min(100% - 2.5rem, 720px);
+    min-height: auto;
+  }
+
+  .wk-capability-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .wk-capability-grid article,
+  .wk-capability-grid article:nth-child(3n + 2),
+  .wk-capability-grid article:nth-child(3n + 3) {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+    border-right: 1px solid var(--line);
+  }
+
+  .wk-capability-grid article:nth-child(2n + 1) {
+    padding-left: 0;
+  }
+
+  .wk-capability-grid article:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .wk-cta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .wk-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .wk-site-header nav {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .wk-hero,
+  .wk-capabilities {
+    width: min(100% - 2.5rem, 1180px);
+  }
+
+  .wk-capability-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wk-capability-grid article,
+  .wk-capability-grid article:nth-child(2n),
+  .wk-capability-grid article:nth-child(2n + 1) {
+    min-height: 0;
+    padding: 1.5rem 0 2rem;
+    border-right: 0;
+  }
+
+  .wk-footer nav {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
