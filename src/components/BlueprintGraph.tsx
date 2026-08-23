@@ -15,12 +15,15 @@ export type BlueprintPin = {
   label: string;
   type: BlueprintPinType;
   value?: string;
+  typeName?: string;
+  tooltip?: string;
 };
 
 export type BlueprintNode = {
   id: string;
   title: string;
   subtitle?: string;
+  tooltip?: string;
   kind: "event" | "function" | "pure" | "struct";
   x: number;
   y: number;
@@ -37,6 +40,7 @@ export type BlueprintConnection = {
 export type BlueprintGraphData = {
   title: string;
   description: string;
+  copyText?: string;
   nodes: BlueprintNode[];
   connections: BlueprintConnection[];
 };
@@ -68,10 +72,24 @@ const nodeHeight = (node: BlueprintNode) =>
 
 const pinKey = (nodeId: string, pinId: string) => `${nodeId}.${pinId}`;
 
+const pinTypeNames: Record<BlueprintPinType, string> = {
+  exec: "Exec",
+  object: "Object Reference",
+  string: "String",
+  name: "Name",
+  struct: "Structure",
+  boolean: "Boolean",
+  number: "Number",
+};
+
 type TooltipState = {
+  body?: string;
+  colour: string;
   left: number;
-  text: string;
+  placement: "above" | "below";
+  title: string;
   top: number;
+  typeName?: string;
 };
 
 const BlueprintPinText = ({
@@ -138,37 +156,170 @@ const BlueprintPinGlyph = ({
 
 export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
   const viewportRef = useRef<HTMLDivElement>(null);
-  const [viewportWidth, setViewportWidth] = useState(0);
+  const dragRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    scrollLeft: number;
+    scrollTop: number;
+    moved: boolean;
+  } | null>(null);
+  const zoomRef = useRef(1);
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [zoomMode, setZoomMode] = useState<"automatic" | "fit" | "manual">("automatic");
   const [manualZoom, setManualZoom] = useState(1);
+  const [dragging, setDragging] = useState(false);
+  const [hoveredPin, setHoveredPin] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
+  const [copied, setCopied] = useState(false);
+  const hideTooltipTimer = useRef(0);
+
+  const copyNodes = async () => {
+    if (!graph.copyText) return;
+    try {
+      await navigator.clipboard.writeText(graph.copyText);
+    } catch {
+      const field = document.createElement("textarea");
+      field.value = graph.copyText;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.left = "-9999px";
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand("copy");
+      field.remove();
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1400);
+  };
 
   const dimensions = useMemo(() => ({
     width: Math.max(...graph.nodes.map((node) => node.x + (node.width ?? defaultNodeWidth)), 600) + 44,
     height: Math.max(...graph.nodes.map((node) => node.y + nodeHeight(node)), 260) + 44,
   }), [graph.nodes]);
 
-  const fitZoom = viewportWidth > 0
-    ? Math.min(1, Math.max(0.25, (viewportWidth - 2) / dimensions.width))
+  const fitZoom = viewportSize.width > 0
+    ? Math.min(
+      1,
+      Math.max(
+        0.25,
+        Math.min(
+          (viewportSize.width - 2) / dimensions.width,
+          (viewportSize.height - 2) / dimensions.height,
+        ),
+      ),
+    )
     : 1;
-  const automaticZoom = viewportWidth > 0 && viewportWidth < 700
-    ? Math.max(0.55, fitZoom)
-    : fitZoom;
   const zoom = zoomMode === "manual"
     ? manualZoom
     : zoomMode === "fit"
       ? fitZoom
-      : automaticZoom;
-  const isFitZoom = zoomMode === "fit" || (zoomMode === "automatic" && automaticZoom === fitZoom);
+      : 1;
+  zoomRef.current = zoom;
+  const isFitZoom = zoomMode === "fit";
+
+  const applyZoom = (nextZoom: number, originX?: number, originY?: number) => {
+    const viewport = viewportRef.current;
+    const clamped = Math.min(1.3, Math.max(0.25, nextZoom));
+    if (viewport) {
+      const ox = originX ?? viewport.clientWidth / 2;
+      const oy = originY ?? viewport.clientHeight / 2;
+      const worldX = (viewport.scrollLeft + ox) / zoomRef.current;
+      const worldY = (viewport.scrollTop + oy) / zoomRef.current;
+      requestAnimationFrame(() => {
+        viewport.scrollLeft = worldX * clamped - ox;
+        viewport.scrollTop = worldY * clamped - oy;
+      });
+    }
+    setManualZoom(clamped);
+    setZoomMode("manual");
+  };
+  const applyZoomRef = useRef(applyZoom);
+  applyZoomRef.current = applyZoom;
 
   useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return undefined;
     const observer = new ResizeObserver(([entry]) => {
-      setViewportWidth(entry.contentRect.width);
+      setViewportSize({
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+      });
     });
     observer.observe(viewport);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return undefined;
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.button !== 0 && event.button !== 1) return;
+      viewport.setPointerCapture(event.pointerId);
+      dragRef.current = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        scrollLeft: viewport.scrollLeft,
+        scrollTop: viewport.scrollTop,
+        moved: false,
+      };
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      const drag = dragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      const dx = event.clientX - drag.startX;
+      const dy = event.clientY - drag.startY;
+      if (!drag.moved) {
+        if (dx * dx + dy * dy < 16) return;
+        drag.moved = true;
+        setTooltip(null);
+        setDragging(true);
+      }
+      viewport.scrollLeft = drag.scrollLeft - dx;
+      viewport.scrollTop = drag.scrollTop - dy;
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      const drag = dragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      dragRef.current = null;
+      setDragging(false);
+    };
+
+    const onMouseDown = (event: MouseEvent) => {
+      if (event.button === 1) event.preventDefault();
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      if (!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      const rect = viewport.getBoundingClientRect();
+      applyZoomRef.current(
+        zoomRef.current * (event.deltaY < 0 ? 1.1 : 1 / 1.1),
+        event.clientX - rect.left,
+        event.clientY - rect.top,
+      );
+    };
+
+    viewport.addEventListener("pointerdown", onPointerDown);
+    viewport.addEventListener("pointermove", onPointerMove);
+    viewport.addEventListener("pointerup", onPointerUp);
+    viewport.addEventListener("pointercancel", onPointerUp);
+    viewport.addEventListener("lostpointercapture", onPointerUp);
+    viewport.addEventListener("mousedown", onMouseDown);
+    viewport.addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      viewport.removeEventListener("pointerdown", onPointerDown);
+      viewport.removeEventListener("pointermove", onPointerMove);
+      viewport.removeEventListener("pointerup", onPointerUp);
+      viewport.removeEventListener("pointercancel", onPointerUp);
+      viewport.removeEventListener("lostpointercapture", onPointerUp);
+      viewport.removeEventListener("mousedown", onMouseDown);
+      viewport.removeEventListener("wheel", onWheel);
+    };
   }, []);
 
   const nodeById = useMemo(
@@ -198,14 +349,39 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
     };
   };
 
-  const showTooltip = (text: string, element: HTMLElement) => {
+  const showTooltip = (
+    element: HTMLElement,
+    content: { title: string; typeName?: string; body?: string; colour: string },
+  ) => {
+    if (dragRef.current?.moved) return;
+    window.clearTimeout(hideTooltipTimer.current);
     const bounds = element.getBoundingClientRect();
-    const halfWidth = Math.min(140, window.innerWidth / 2 - 12);
+    const halfWidth = Math.min(160, window.innerWidth / 2 - 12);
+    const placement = bounds.top < 96 ? "below" : "above";
     setTooltip({
+      ...content,
       left: Math.min(window.innerWidth - halfWidth, Math.max(halfWidth, bounds.left + bounds.width / 2)),
-      text,
-      top: bounds.top - 6,
+      placement,
+      top: placement === "above" ? bounds.top - 6 : bounds.bottom + 6,
     });
+  };
+
+  const showPinTooltip = (pin: BlueprintPin, element: HTMLElement) => {
+    if (pin.type === "exec" && !pin.tooltip && !pin.label) return;
+    showTooltip(element, {
+      title: pin.label || pin.id,
+      typeName: pin.typeName ?? pinTypeNames[pin.type],
+      body: pin.tooltip,
+      colour: pinColours[pin.type],
+    });
+  };
+
+  const hideHover = () => {
+    window.clearTimeout(hideTooltipTimer.current);
+    hideTooltipTimer.current = window.setTimeout(() => {
+      setHoveredPin(null);
+      setTooltip(null);
+    }, 60);
   };
 
   return (
@@ -215,38 +391,54 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
           <strong>{graph.title}</strong>
           <span>{graph.description}</span>
         </div>
-        <div className="bp-zoom-controls" aria-label="Blueprint graph zoom controls">
-          <button
-            type="button"
-            aria-label="Zoom out"
-            onClick={() => {
-              setManualZoom(Math.max(0.25, zoom - 0.1));
-              setZoomMode("manual");
-            }}
-          >
-            -
-          </button>
-          <output aria-live="polite">{Math.round(zoom * 100)}%</output>
-          <button
-            type="button"
-            aria-label="Zoom in"
-            onClick={() => {
-              setManualZoom(Math.min(1.3, zoom + 0.1));
-              setZoomMode("manual");
-            }}
-          >
-            +
-          </button>
-          <button
-            className={isFitZoom ? "is-active" : ""}
-            type="button"
-            onClick={() => setZoomMode("fit")}
-          >
-            Fit
-          </button>
+        <div className="bp-toolbar">
+          {graph.copyText && (
+            <button
+              type="button"
+              className="bp-copy"
+              aria-label="Copy Blueprint nodes for the Unreal editor"
+              onClick={copyNodes}
+            >
+              {copied ? "Copied" : "Copy"}
+            </button>
+          )}
+          <div className="bp-zoom-controls" aria-label="Blueprint graph zoom controls">
+            <button
+              type="button"
+              aria-label="Zoom out"
+              onClick={() => applyZoom(zoom - 0.1)}
+            >
+              -
+            </button>
+            <output aria-live="polite">{Math.round(zoom * 100)}%</output>
+            <button
+              type="button"
+              aria-label="Zoom in"
+              onClick={() => applyZoom(zoom + 0.1)}
+            >
+              +
+            </button>
+            <button
+              className={isFitZoom ? "is-active" : ""}
+              type="button"
+              onClick={() => {
+                const viewport = viewportRef.current;
+                setZoomMode("fit");
+                if (viewport) {
+                  viewport.scrollLeft = 0;
+                  viewport.scrollTop = 0;
+                }
+              }}
+            >
+              Fit
+            </button>
+          </div>
         </div>
       </figcaption>
-      <div className="bp-scroll" ref={viewportRef}>
+      <div
+        className={`bp-scroll${dragging ? " is-dragging" : ""}`}
+        ref={viewportRef}
+      >
         <div
           className="bp-stage"
           style={{
@@ -276,8 +468,10 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
               const bend = Math.max(70, Math.abs(to.x - from.x) * 0.45);
               const path = `M ${from.x} ${from.y} C ${from.x + bend} ${from.y}, ${to.x - bend} ${to.y}, ${to.x} ${to.y}`;
               const key = `${connection.from.join(".")}-${connection.to.join(".")}-${index}`;
+              const hot = hoveredPin === pinKey(connection.from[0], connection.from[1])
+                || hoveredPin === pinKey(connection.to[0], connection.to[1]);
               return (
-                <g className={`bp-wire is-${from.type}`} key={key}>
+                <g className={`bp-wire is-${from.type}${hot ? " is-hot" : ""}`} key={key}>
                   <path className="bp-wire-shadow" d={path} />
                   <path className="bp-wire-line" d={path} stroke={pinColours[from.type]} />
                 </g>
@@ -298,14 +492,33 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
               key={node.id}
               aria-label={`${node.title} Blueprint node`}
             >
-              <header>
+              <header
+                onMouseEnter={(event) => {
+                  if (!node.tooltip) return;
+                  showTooltip(event.currentTarget, {
+                    title: node.title,
+                    body: node.tooltip,
+                    colour: nodeAccentColours[node.kind],
+                  });
+                }}
+                onMouseLeave={hideHover}
+              >
                 <strong>{node.title}</strong>
                 {node.subtitle && <span>{node.subtitle}</span>}
               </header>
               <div className="bp-node-body">
                 <div className="bp-pin-column is-input">
                   {(node.inputs ?? []).map((pin) => (
-                    <div className="bp-pin" key={pin.id}>
+                    <div
+                      className={`bp-pin${hoveredPin === pinKey(node.id, pin.id) ? " is-hot" : ""}`}
+                      key={pin.id}
+                      onMouseEnter={(event) => {
+                        window.clearTimeout(hideTooltipTimer.current);
+                        setHoveredPin(pinKey(node.id, pin.id));
+                        showPinTooltip(pin, event.currentTarget);
+                      }}
+                      onMouseLeave={hideHover}
+                    >
                       <BlueprintPinGlyph
                         connected={connectedPins.has(pinKey(node.id, pin.id))}
                         side="input"
@@ -314,37 +527,68 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
                       {pin.label && (
                         <BlueprintPinText
                           text={pin.label}
-                          onHide={() => setTooltip(null)}
-                          onShow={showTooltip}
+                          onHide={() => undefined}
+                          onShow={(text, element) => showTooltip(element, {
+                            title: pin.label,
+                            typeName: pin.typeName ?? pinTypeNames[pin.type],
+                            body: pin.tooltip,
+                            colour: pinColours[pin.type],
+                          })}
                         />
                       )}
-                      {pin.value && (
-                        <BlueprintPinText
-                          isValue
-                          text={pin.value}
-                          onHide={() => setTooltip(null)}
-                          onShow={showTooltip}
-                        />
-                      )}
+                      {pin.type === "boolean" && pin.value
+                        ? <span className={`bp-checkbox${pin.value === "true" ? " is-on" : ""}`} aria-hidden="true" />
+                        : pin.value && (
+                          <BlueprintPinText
+                            isValue
+                            text={pin.value}
+                            onHide={() => undefined}
+                            onShow={(text, element) => showTooltip(element, {
+                              title: pin.label || pin.id,
+                              typeName: pin.typeName ?? pinTypeNames[pin.type],
+                              body: pin.tooltip ?? text,
+                              colour: pinColours[pin.type],
+                            })}
+                          />
+                        )}
                     </div>
                   ))}
                 </div>
                 <div className="bp-pin-column is-output">
                   {(node.outputs ?? []).map((pin) => (
-                    <div className="bp-pin" key={pin.id}>
+                    <div
+                      className={`bp-pin${hoveredPin === pinKey(node.id, pin.id) ? " is-hot" : ""}`}
+                      key={pin.id}
+                      onMouseEnter={(event) => {
+                        window.clearTimeout(hideTooltipTimer.current);
+                        setHoveredPin(pinKey(node.id, pin.id));
+                        showPinTooltip(pin, event.currentTarget);
+                      }}
+                      onMouseLeave={hideHover}
+                    >
                       {pin.value && (
                         <BlueprintPinText
                           isValue
                           text={pin.value}
-                          onHide={() => setTooltip(null)}
-                          onShow={showTooltip}
+                          onHide={() => undefined}
+                          onShow={(text, element) => showTooltip(element, {
+                            title: pin.label || pin.id,
+                            typeName: pin.typeName ?? pinTypeNames[pin.type],
+                            body: pin.tooltip ?? text,
+                            colour: pinColours[pin.type],
+                          })}
                         />
                       )}
                       {pin.label && (
                         <BlueprintPinText
                           text={pin.label}
-                          onHide={() => setTooltip(null)}
-                          onShow={showTooltip}
+                          onHide={() => undefined}
+                          onShow={(text, element) => showTooltip(element, {
+                            title: pin.label,
+                            typeName: pin.typeName ?? pinTypeNames[pin.type],
+                            body: pin.tooltip,
+                            colour: pinColours[pin.type],
+                          })}
                         />
                       )}
                       <BlueprintPinGlyph
@@ -363,11 +607,17 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
       </div>
       {tooltip && (
         <div
-          className="bp-tooltip"
+          className={`bp-tooltip is-${tooltip.placement}`}
           role="tooltip"
-          style={{ left: tooltip.left, top: tooltip.top }}
+          style={{
+            "--tooltip-accent": tooltip.colour,
+            left: tooltip.left,
+            top: tooltip.top,
+          } as CSSProperties}
         >
-          {tooltip.text}
+          <strong>{tooltip.title}</strong>
+          {tooltip.typeName && <span className="bp-tooltip-type">{tooltip.typeName}</span>}
+          {tooltip.body && <p>{tooltip.body}</p>}
         </div>
       )}
     </figure>
