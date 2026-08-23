@@ -13,12 +13,11 @@ const WebkilnSection: React.FC = () => {
           </div>
 
           <p className="webkiln-lead">
-            Build Unreal Engine HUDs, menus and world-space interfaces with
-            HTML, CSS, JavaScript and React.
+            Build Unreal menus and HUDs with HTML, CSS, JavaScript and React.
           </p>
           <p className="webkiln-summary">
-            Webkiln embeds accelerated Chromium in Slate and UMG, with a typed
-            bridge to Blueprint and C++.
+            Webkiln puts that interface in the running game and lets it talk
+            to Blueprint and C++.
           </p>
 
           <div className="btn-group">
@@ -45,7 +44,6 @@ const WebkilnSection: React.FC = () => {
             playsInline
             preload="metadata"
           />
-          <span>Web UI running inside Unreal Engine</span>
         </a>
       </div>
     </section>

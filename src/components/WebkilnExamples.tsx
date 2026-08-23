@@ -3,6 +3,7 @@ import hljs from "highlight.js/lib/core";
 import css from "highlight.js/lib/languages/css";
 import javascript from "highlight.js/lib/languages/javascript";
 import xml from "highlight.js/lib/languages/xml";
+import { LanguageIcon } from "./LanguageIcon";
 
 hljs.registerLanguage("css", css);
 hljs.registerLanguage("javascript", javascript);
@@ -12,7 +13,7 @@ const hotReloadHtml = `<main class="hud">
   <section class="player-panel">
     <header>
       <span class="level">18</span>
-      <div><strong>Mara Vale</strong><small>Wayfarer</small></div>
+      <div><strong>Hob Upton</strong><small>Watch courier</small></div>
     </header>
     <label><img src="/webkiln/showcase/hud-icons/vitality.png" alt=""><span>Vitality</span><i class="meter vitality"><b id="vitality-fill"></b></i><output id="vitality-value">72</output></label>
     <label><img src="/webkiln/showcase/hud-icons/focus.png" alt=""><span>Focus</span><i class="meter focus"><b id="focus-fill"></b></i><output id="focus-value">68</output></label>
@@ -25,10 +26,10 @@ const hotReloadHtml = `<main class="hud">
 
   <aside class="quest">
     <img src="/webkiln/showcase/hud-icons/quest.png" alt="">
-    <div><strong>The Old Road</strong><span>Reach the watchtower</span></div>
+    <div><strong>Oswin's lamp</strong><span>Hang it on the tower</span></div>
   </aside>
 
-  <p class="location">Greyfen Road</p>
+  <p class="location">Nine-Mile Dike</p>
 
   <aside class="equipment">
     <p id="weapon-row"><img id="weapon-icon" src="/webkiln/showcase/hud-icons/sword.png" alt=""><span><strong id="weapon-name">Iron sword</strong><small>Main hand</small></span></p>
@@ -781,17 +782,7 @@ const WebkilnExamples = () => {
   return (
     <section className="webkiln-examples" id="webkiln-examples">
       <div className="shell">
-        <header className="examples-heading">
-          <h2>Web UI running in Unreal</h2>
-          <p>The editor applies real HTML, CSS and JavaScript to the game view as each file is written.</p>
-        </header>
-
         <article ref={hotReloadExampleRef} className="example-block">
-          <header className="example-intro">
-            <h3>Build an interactive RPG inventory</h3>
-            <p>HTML lays out the HUD, CSS gives it a game-ready finish, and JavaScript opens the inventory and equips an item. Edit any file when the build finishes.</p>
-          </header>
-
           <div className="live-example rpg-hud-example">
             <div className="code-demo">
               <div className="demo-bar hot-reload-tab-bar">
@@ -807,6 +798,7 @@ const WebkilnExamples = () => {
                       aria-selected={index === selectedHotReloadTab}
                       onClick={() => setSelectedHotReloadTab(index)}
                     >
+                      <LanguageIcon fileName={file.name} language={file.language} />
                       {file.name}
                     </button>
                   ))}
@@ -860,10 +852,11 @@ const WebkilnExamples = () => {
           <header className="production-example-copy">
             <h3>How Fall of an Empire uses Webkiln</h3>
             <p>
-              Fall of an Empire, a grand strategy game out now on Steam, builds
-              its interface with Webkiln. Faction panels, character screens and
-              branching story events all pull live data straight from the
-              campaign running in Unreal.
+              Fall of an Empire, a grand strategy game, builds
+              its interface with Webkiln. 
+            </p>
+            <p>
+              See more about Fall of an Empire <a href="https://fallofanempiregame.com">here</a>.
             </p>
           </header>
 
@@ -875,10 +868,6 @@ const WebkilnExamples = () => {
               height="1080"
               loading="lazy"
             />
-            <figcaption>
-              A faction overview, character actions and a branching event are all
-              layered over the live campaign map.
-            </figcaption>
           </figure>
         </article>
       </div>
