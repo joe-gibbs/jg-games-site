@@ -1,9 +1,8 @@
 # Security and support
 
-Supported engine versions and platforms are listed in [Compatibility](Compatibility.md).
+A specific CEF build is included. Runtime files must match that build.
 
-Webkiln uses a pinned CEF release. Webkiln rejects runtime files that do not match.
-
-Local mounts are trusted application content. Webkiln rejects traversal outside them. Webkiln denies network access unless an origin is listed in Project Settings. Webkiln injects the native bridge only into `gameui://` pages.
+Paths stay inside the mount. Network access requires an origin in **Allowed Remote Origins**.
+`window.gameUI` is only on `gameui://` pages.
 
 Report security issues to `contact@jggames.dev`.

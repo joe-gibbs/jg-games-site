@@ -1,13 +1,12 @@
 # Packaging
 
-Webkiln stages its CEF runtime. Packaged projects do not download CEF. They do not
-build a separate subprocess target.
+The CEF runtime ships in the package. Configured **Trusted Local Mounts** are packaged
+with the game. Web roots must be inside the project directory.
 
-Webkiln packages configured **Trusted Local Mounts**. Web roots must be inside
-the project directory. The `gameui://` handler reads them through the Unreal platform-file
-layer. This includes pak and IoStore data.
+Mounts added with `RegisterResourceMount` at runtime also need a **Trusted Local Mounts**
+entry, or manage the Unreal packaging entries yourself.
 
-The packaging process cannot see mounts that you register with `RegisterResourceMount` at runtime. Add those roots to **Trusted Local Mounts** also. Or disable automatic staging and manage the Unreal packaging entries yourself.
+See [Compatibility](Compatibility.md) for which Unreal Engine minor version to install.
 
-Use the Webkiln package that matches the project Unreal Engine minor version. See
-[Compatibility](Compatibility.md).
+Watermarked evaluation builds display the Webkiln logo in the bottom-right of every
+view. Licensed copies from Fab do not. `IsWatermarked` reports the compiled edition.

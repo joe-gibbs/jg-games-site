@@ -1,36 +1,31 @@
 # API
 
-[View lifecycle](Lifecycle.md) covers view ownership and loading. [JavaScript bridge](Bridge.md)
-covers bridge requests, pushed events and serialisation. See
-[C++ API](CppAPI.md) for the public native surface.
-
 ## View initialisation
 
-`FWebkilnViewInitParams` controls the browser that **Create View** and **Create View Async** create.
+`FWebkilnViewInitParams`:
 
 | Field | Meaning |
 |---|---|
-| View Id | Unique name used to find and destroy the view. |
-| Entry Point | URL that CEF loads. Use a trusted `gameui://` URL in normal cases. |
-| Width, Height | Browser size in pixels. Zero uses the current player viewport dimension. |
-| Render Scale | Multiplier for the backing render-target dimensions. |
-| UI Scale Viewport Size | Viewport published to the Webkiln CSS scaling code. Zero uses the resolved browser size. |
-| Transparent | Enables a transparent browser background. |
+| View Id | Used to find and destroy the view. |
+| Entry Point | Use a trusted `gameui://` URL in normal cases. |
+| Width, Height | Zero uses the current player viewport dimension. |
+| Render Scale | Multiplier for the backing texture size. |
+| UI Scale Viewport Size | For atlas / off-screen views. Zero uses the browser size. |
+| Transparent | Alpha background. |
 | Use Default Transparency | Uses the project setting instead of the value above. |
-| Frame Rate | CEF windowless frame rate. Zero uses the project default. |
-| Create Render Target | Creates the texture that Slate and UMG present. |
-| Localisation String Table | String Table asset published to the page. |
-| Localisation String Table Id | Identifier for a native String Table when no asset is assigned. |
+| Frame Rate | Zero uses the project default. |
+| Create Render Target | The texture that Slate and UMG present. |
+| Localisation String Table | String Table asset given to the page. |
+| Localisation String Table Id | Native String Table, used instead of an asset. |
 | Route Browser Audio to Unreal | Captures Chromium audio into the Unreal mixer. |
-| Browser Audio Volume | Initial volume multiplier on the Unreal side. |
-| Browser Audio Is UI Sound | Applies Unreal UI-sound pause and mixing rules. |
-| Browser Audio Sound Class | Optional Sound Class for captured browser audio. |
-| Browser Audio Submix | Optional Sound Submix for captured browser audio. |
+| Browser Audio Volume | Initial Unreal-side multiplier. |
+| Browser Audio Is UI Sound | Unreal UI-sound pause and mixing rules. |
+| Browser Audio Sound Class | Mix and pause class. |
+| Browser Audio Submix | Effects graph. |
 
 ## Unreal textures in HTML
 
-Trusted `gameui://` pages can place Unreal textures with the `webkiln-texture` custom element.
-The element does not depend on a UI framework:
+Trusted `gameui://` pages can show Unreal textures with `webkiln-texture`.
 
 ```html
 <webkiln-texture
@@ -40,36 +35,17 @@ The element does not depend on a UI framework:
 </webkiln-texture>
 ```
 
-Bind the source name from Blueprint with **Set Webkiln Texture**. Call it on the
-`UWebkilnView` or its `UWebkilnWidget`. The texture input accepts `UTexture`. This includes
-texture assets, render targets, media textures and canvas render targets. Use **Clear
-Webkiln Texture** when a runtime source is no longer available. `UWebkilnWidget` also
-provides a **Texture Sources** map for fixed bindings that you set in the editor.
+Bind the source with **Set Webkiln Texture** on the `UWebkilnView` or its `UWebkilnWidget`.
+The input accepts `UTexture`: assets, render targets, media textures and canvas render targets.
+**Clear Webkiln Texture** drops a runtime source. `UWebkilnWidget` also has a **Texture Sources**
+map for editor bindings.
 
-The element supports:
-
-- inherited opacity and visibility
-- rectangular ancestor clipping
-- CSS stacking between Webkiln texture elements
-- `object-fit` values `fill`, `contain`, `cover`, `none` and `scale-down`
-
-Pointer input remains normal DOM input. Texture pixels stay on the Unreal rendering path.
-Texture updates do not require browser bridge calls.
-
-Webkiln texture elements are native surfaces. Webkiln composites them above the browser page.
-Relative order follows numeric `z-index` and document order.
-
-The element has two composition paths:
-
-- `mode="native"` uses the named Unreal `source` binding. It does not copy pixels into
-  Chromium. `native-layer="above"` is the default. `native-layer="below"` draws beneath
-  the browser plane. Use the below layer with transparent atlas or overlay pages.
-- `mode="dom"` renders the browser-readable `src` through a real shadow-DOM `<img>`.
-  Transforms, masks, filters, border radii and DOM stacking then use the Chromium compositor.
-
-`mode="auto"` selects native when `source` is present. Otherwise it selects DOM. A render target,
-media texture or other live `UTexture` uses native mode. Packaged `gameui://` images can
-use DOM mode when full CSS composition is more important than the native texture path.
+- `mode="native"` (default when `source` is set) draws the Unreal texture on top of the page.
+  `native-layer="below"` draws beneath — use that with transparent overlay pages.
+  Opacity, clipping, stacking and `object-fit` work. Pointer input is ordinary DOM input.
+- `mode="dom"` shows `src` as a real `<img>`, so CSS transforms, masks, filters and
+  border radii go through Chromium.
+- `mode="auto"` picks native when `source` is set, otherwise DOM.
 
 ```html
 <webkiln-texture mode="dom" src="gameui://app/images/frame.png"></webkiln-texture>
@@ -78,9 +54,8 @@ use DOM mode when full CSS composition is more important than the native texture
 
 ## Screen and world anchors
 
-Use `webkiln-anchor` when one Webkiln view must show many labels, indicators and small
-controls at different positions. Webkiln draws them into one browser atlas. The host composites the
-atlas cells in one Slate draw batch. Each anchor shares one Chromium view.
+Use `webkiln-anchor` when one view needs many labels or controls at different world or
+screen positions. They share one off-screen browser page (the atlas).
 
 ```html
 <webkiln-anchor source="settlement.rome" anchor="50% 100%" interactive>
@@ -88,59 +63,39 @@ atlas cells in one Slate draw batch. Each anchor shares one Chromium view.
 </webkiln-anchor>
 ```
 
-Create a second view for the atlas page. Set it as the main view **Anchor Atlas View**.
-Then supply `FWebkilnAnchorPlacement` values with **Set Anchor Placements** or **Set Anchor
-Placement**. **Bind Anchor to Component** projects a scene component or socket each
-engine tick. Placement does not wait for browser layout or bridge latency. The
-widget also exposes **Anchor Atlas View** as an editor property.
+Create a second view for the atlas page and set it as the main view **Anchor Atlas View**.
+**Set Anchor Placements** / **Set Anchor Placement** supply positions.
+**Bind Anchor to Component** follows a scene component or socket each tick.
 
-`anchor` accepts CSS-like pixel or percentage coordinates. The default is the element centre.
-Placement **Layer** controls draw order. **Hit Priority** can resolve overlapping interactive
-anchors. When you do not set **Hit Priority**, Webkiln uses the draw layer.
+`anchor` is CSS-like pixel or percentage coordinates; default is the element centre.
+**Layer** is draw order. **Hit Priority** breaks ties; if unset, the draw layer is used.
 
-The atlas layout becomes active only after Chromium paints the reported revision.
-This prevents a new UV layout from pairing with an older atlas texture. Add
-`data-webkiln-anchor-hit` to a descendant to define a smaller interactive region. Webkiln detects
-interactive descendants such as buttons without extra markup. Slate maps pointer input at the native
-anchor position back into the atlas DOM. This includes hover, capture, double-click and wheel.
-
-You can keep existing DOM element types. Add
-`data-webkiln-anchor="key"` and the optional attributes
-`data-webkiln-anchor-point`,
-`data-webkiln-anchor-raster-scale`, `data-webkiln-anchor-reserve-size`,
-`data-webkiln-anchor-priority` and `data-webkiln-anchor-demand`. This is the same
-runtime path that `webkiln-anchor` uses. It works with plain HTML or any JavaScript framework.
+`data-webkiln-anchor-hit` on a descendant shrinks the clickable region; buttons are
+already clickable. The same setup works with `data-webkiln-anchor="key"` on a normal element.
 
 ## Unreal localisation
 
-Assign an Unreal String Table asset in `FWebkilnViewInitParams`, on `UWebkilnWidget`, or
-with **Set Localisation String Table**. Asset-backed tables take part in the Unreal
-localisation gather and package flow. Webkiln resolves each entry through `FText` for the
-active culture. Webkiln publishes the catalogue again when the Unreal text revision changes.
-
-Plain HTML can use the built-in element:
+Assign a String Table in `FWebkilnViewInitParams`, on `UWebkilnWidget`, or with
+**Set Localisation String Table**. Asset-backed tables take part in Unreal localisation.
+Entries follow the active culture.
 
 ```html
 <webkiln-text key="Menu.Continue" fallback="Continue"></webkiln-text>
 ```
-
-JavaScript and any UI framework can use the same catalogue. A framework adapter is not required:
 
 ```javascript
 const label = window.webkiln.localisation.text('Menu.Continue', undefined, 'Continue');
 const unsubscribe = window.webkiln.localisation.subscribe(locale => render(locale));
 ```
 
-`webkiln-text` updates when the culture changes. The API also sets the
-document `lang` attribute and emits `webkiln:localisation-changed`. For native tables
-that a module registers, **Set Localisation String Table Id** selects the existing table.
+`webkiln-text` updates when the culture changes. `webkiln:localisation-changed` is fired.
+For native tables registered by a module, use **Set Localisation String Table Id**.
 
 ## Automatic DOM hit testing
 
-Webkiln derives world-input blocking and the Slate cursor from the Chromium pointer
-target. Each element that Chromium can hit blocks world input. The document `html` and `body`
-surfaces pass through. Mark an empty layout surface with `data-webkiln-world-input` when a hit
-on that element must go to the native world:
+Any element Chromium can hit blocks world input. `html` and `body` pass through. Mark an
+empty layout surface with `data-webkiln-world-input` when a hit on that element should go
+to the world:
 
 ```html
 <div id="root" data-webkiln-world-input>
@@ -150,10 +105,7 @@ on that element must go to the native world:
 </div>
 ```
 
-The marker affects only the element that carries it. Descendant panels, buttons, inputs and other
-ordinary HTML remain hit-testable. They block world input without registration. Use CSS
-`pointer-events: none` for visual elements that Chromium must skip.
-You can configure cursor selectors when the project needs game-specific cursor kinds:
+The marker applies only to that element. Use CSS `pointer-events: none` for decoration.
 
 ```javascript
 window.webkiln.input.configure({
@@ -165,24 +117,10 @@ window.webkiln.input.configure({
 });
 ```
 
-Pointer capture keeps the browser as input owner until release. `On Input State Changed`
-exposes the cached state to Blueprint. `BlocksWorldInput` and Slate input handling
-use that state. Webkiln refreshes the target after DOM, scroll and viewport changes.
-Call `window.webkiln.input.refresh()` after layout changes that the application controls.
-For more pointer behaviour, see [Input](Input.md).
+Call `window.webkiln.input.refresh()` after layout changes your code made.
+See [Input](Input.md).
 
 ## Browser audio
 
-Webkiln captures browser audio after Chromium mixes HTML media and Web Audio nodes. Webkiln
-interleaves the captured float channels into procedural PCM. Webkiln plays one Unreal audio
-component per view. Configure routing in `FWebkilnViewInitParams`:
-
-- **Route Browser Audio to Unreal** enables capture. It is on by default.
-- **Browser Audio Sound Class** controls class volume, mix and pause behaviour.
-- **Browser Audio Submix** selects the Unreal effects and routing graph.
-- **Browser Audio Is UI Sound** controls whether the component follows UI-sound pause rules.
-- **Browser Audio Volume** sets the initial component multiplier.
-
-You can call **Set Browser Audio Volume** and **Set Browser Audio Muted** at runtime from
-Blueprint. Chromium decodes media, keeps media in sync and mixes Web Audio.
-Unreal owns the final device path.
+Chromium audio is captured (on by default) into one Unreal audio component per view.
+Routing fields are on `FWebkilnViewInitParams`.

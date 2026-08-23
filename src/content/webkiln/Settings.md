@@ -1,42 +1,33 @@
 # Project settings
 
-Webkiln settings are under **Project Settings > Plugins > Webkiln**. Webkiln stores them in
-the project Engine configuration.
+**Project Settings > Plugins > Webkiln**. Stored in the project Engine configuration.
 
 ## Development
 
 | Setting | Default | Behaviour |
 |---|---:|---|
-| Enable DevTools | On | Enables **Open DevTools** and the remote-debugging endpoint in Editor and Development builds. Webkiln removes both paths from Shipping. Requires a process restart. |
-| Remote Debugging Port | `9222` | TCP port that Chromium remote debugging uses when DevTools are enabled. Set it to `0` to disable the endpoint and keep the per-view DevTools window. Requires a process restart. |
+| Enable DevTools | On | **Open DevTools** and remote debugging in Editor and Development. Requires a process restart. |
+| Remote Debugging Port | `9222` | Set to `0` for the per-view DevTools window only. Requires a process restart. |
 
-When the endpoint is active, Webkiln writes its address to the Unreal log. The endpoint listens on
-the local machine. Shipping builds set no remote-debugging port. **Open DevTools**
-returns false.
+When the endpoint is active, its address is written to the Unreal log. It listens on
+the local machine.
 
 ## Runtime
 
 | Setting | Default | Behaviour |
 |---|---:|---|
-| Cache Mode | Persistent | Selects persistent, memory-only or disabled Chromium caching. Webkiln reads this when CEF starts. |
+| Cache Mode | Persistent | Persistent, memory-only or disabled. Read when CEF starts. |
 | Default Frame Rate | `60` | Used when a view **Frame Rate** is `0`. Existing views keep the rate selected at creation. |
 | Default Transparent | On | Used when a view has **Use Default Transparency** enabled. Existing views keep their transparency mode. |
-| GPU Thread Priority | `7` | Sets the thread priority of the CEF GPU process from `-7` to `7`. Requires a process restart. |
+| GPU Thread Priority | `7` | CEF GPU process, `-7` to `7`. Requires a process restart. |
 
-Webkiln stores persistent cache data under `Saved/Webkiln/DefaultProfile`. The CEF log is
-at `Saved/Webkiln/Logs/cef.log`. Multiprocess PIE uses a separate directory below
-`Saved/Webkiln/MultiprocessPIE` for each process.
+Cache and logs live under `Saved/Webkiln/`. Multiprocess PIE gets a directory per process.
 
-**Memory Only** gives Chromium no persistent profile path. **Disabled** also passes the
-Chromium cache-disable switch. Neither mode deletes an existing persistent profile.
-
-In non-Shipping builds, `-WebkilnGpuThreadPriority=N` overrides the configured GPU thread
-priority for that process.
+Switching Cache Mode away from Persistent leaves any existing profile on disk.
 
 ## Input
 
-**Gamepad Key Mappings** translates Unreal gamepad keys into browser keyboard keys while
-the Webkiln widget has keyboard focus.
+**Gamepad Key Mappings**, while the Webkiln widget has keyboard focus:
 
 | Gamepad key | Default browser key |
 |---|---|
@@ -46,48 +37,40 @@ the Webkiln widget has keyboard focus.
 | Left shoulder | Page Up |
 | Right shoulder | Page Down |
 
-Webkiln does not send an unmapped gamepad key to Chromium. Webkiln reads mapping changes on each key event.
+Unmapped keys stay with the game. Mapping changes apply on the next key event.
 
 ## Resources
 
-**Trusted Local Mounts** maps a host to a project directory. A mount with host `app` and
-root `WebUI/dist` makes that directory available at `gameui://app/`. Hosts accept letters,
-digits and hyphens inside the name. Webkiln canonicalises mounted paths. Paths cannot go outside their root.
+Each **Trusted Local Mounts** entry is a host plus a project directory. Host `app` and
+root `WebUI/dist` serve `gameui://app/`. Host names: letters, digits and hyphens.
 
-Webkiln registers configured mounts during plugin startup. A change requires an
-editor or game restart.
+A change needs an editor or game restart.
 
-**Automatically Stage Trusted Local Mounts** adds the configured directories to the Unreal
-**Additional Non-Asset Directories to Package** list. Webkiln records the entries that it owns
-in **Automatically Staged Resource Roots**. That managed list is configuration data. Do not
-edit it manually. See [Packaging](Packaging.md).
+**Automatically Stage Trusted Local Mounts** adds those directories to Unreal's
+**Additional Non-Asset Directories to Package** list. See [Packaging](Packaging.md).
 
 ## Bridge
 
-**Bridge Actions** contains Blueprint subclasses of `UWebkilnBridgeAction`. Webkiln creates
-one instance of each class for each game instance. Webkiln rejects empty and duplicate action names.
-Changes take effect when the next game instance is created.
+**Bridge Actions**: Blueprint subclasses of `UWebkilnBridgeAction`. One instance per
+class per game instance. Changes apply on the next game instance.
 
-**Bridge Events** records the name and optional payload struct for events pushed from
-Unreal. It does not register runtime handlers. **Export Bridge TypeScript** reads the list
-when it generates the typed JavaScript event map.
+**Bridge Events**: name and optional payload struct for events pushed from Unreal.
+**Export Bridge TypeScript** reads this list.
 
 ## Security
 
-**Allowed Remote Origins** permits HTTPS pages and resources outside `gameui://`. Webkiln matches each
-entry without letter case. Webkiln removes a trailing slash before the match. A URL must equal
-the entry or be below it as a slash-delimited path. Remote pages never receive
-`window.gameUI`.
+**Allowed Remote Origins**: HTTPS outside `gameui://`. Matching is case-insensitive;
+a trailing slash is optional. A URL must equal the entry or sit below it as a
+slash-delimited path.
 
-Webkiln handles `gameui://`, `data:`, `blob:` and `about:blank` without entries in
-this list. A change to the list requires a restart.
+`gameui://`, `data:`, `blob:` and `about:blank` are always allowed.
+A change to the list requires a restart.
 
 ## Logging
 
 | Setting | Default | Behaviour |
 |---|---:|---|
-| Log Level | Info | Minimum severity written to `Saved/Webkiln/Logs/cef.log` in non-Shipping builds. CEF reads it one time at startup. |
-| Log Console Messages in Shipping | Off | Copies browser console warnings and errors into the Unreal log in Shipping. **On Console Message** still receives console messages. |
+| Log Level | Info | Minimum severity in `Saved/Webkiln/Logs/cef.log` in non-Shipping builds. |
+| Log Console Messages in Shipping | Off | Copies browser console warnings and errors into the Unreal log in Shipping. |
 
-Shipping fixes the CEF log severity at Warning. Browser console logging stays off unless
-**Log Console Messages in Shipping** is enabled.
+In Shipping, CEF log severity is Warning.

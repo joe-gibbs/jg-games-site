@@ -12,6 +12,7 @@ import powershell from "highlight.js/lib/languages/powershell";
 import typescript from "highlight.js/lib/languages/typescript";
 import xml from "highlight.js/lib/languages/xml";
 import { BlueprintExamples } from "./components/BlueprintExamples";
+import { LanguageIcon } from "./components/LanguageIcon";
 
 hljs.registerLanguage("bash", bash);
 hljs.registerLanguage("cpp", cpp);
@@ -125,14 +126,28 @@ const languageNames: Record<string, string> = {
   ts: "TypeScript",
 };
 
+const markUnrealTypes = (html: string) => html.replace(
+  /<span class="hljs-[^"]*">[\s\S]*?<\/span>|([^<]+)/g,
+  (match, text: string | undefined) => {
+    if (text === undefined) return match;
+    return text.replace(
+      /\b(?:[UAFTEI][A-Z][A-Za-z0-9_]*|int8|int16|int32|int64|uint8|uint16|uint32|uint64|TCHAR|SIZE_T)\b/g,
+      '<span class="hljs-type">$&</span>',
+    );
+  },
+);
+
 const CodeBlock = ({ code, language }: { code: string; language: string }) => {
   const [copied, setCopied] = useState(false);
   const highlighted = language === "text"
     ? undefined
-    : hljs.highlight(code, {
-        language: hljs.getLanguage(language) ? language : "plaintext",
-        ignoreIllegals: true,
-      }).value;
+    : (() => {
+        const html = hljs.highlight(code, {
+          language: hljs.getLanguage(language) ? language : "plaintext",
+          ignoreIllegals: true,
+        }).value;
+        return language === "cpp" || language === "c" ? markUnrealTypes(html) : html;
+      })();
 
   const copy = async () => {
     await navigator.clipboard.writeText(code);
@@ -143,7 +158,10 @@ const CodeBlock = ({ code, language }: { code: string; language: string }) => {
   return (
     <div className="docs-code">
       <div className="docs-code-head">
-        <span>{languageNames[language] ?? language}</span>
+        <span className="docs-code-lang">
+          <LanguageIcon language={language} />
+          {languageNames[language] ?? language}
+        </span>
         <button type="button" onClick={copy}>{copied ? "Copied" : "Copy"}</button>
       </div>
       <pre>
@@ -231,7 +249,6 @@ function WebkilnDocs() {
 
       <div className="docs-layout">
         <aside className="docs-sidebar">
-          <p className="docs-version">Documentation · 1.0</p>
           <nav aria-label="Webkiln documentation">
             {navigationGroups.map((group) => (
               <div className="docs-nav-group" key={group.label}>
@@ -265,7 +282,7 @@ function WebkilnDocs() {
               <img src="/webkiln-logo.svg" alt="" />
               <div>
                 <strong>Webkiln</strong>
-                <span>Documentation for version 1.0</span>
+                <span>Documentation</span>
               </div>
               <a href="mailto:contact@jggames.dev">contact@jggames.dev</a>
             </footer>
