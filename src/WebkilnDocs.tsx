@@ -43,40 +43,49 @@ const rawDocuments = import.meta.glob("./content/webkiln/*.md", {
 }) as Record<string, string>;
 
 const documentOrder = [
-  "README.md",
+  "Overview.md",
   "QuickStart.md",
-  "Lifecycle.md",
-  "Bridge.md",
-  "API.md",
-  "Input.md",
+  "TalkToTheGame.md",
+  "HUD.md",
   "WorldSpace.md",
+  "Input.md",
+  "HtmlElements.md",
+  "Views.md",
+  "Bridge.md",
   "Settings.md",
   "Packaging.md",
+  "CppAPI.md",
   "Compatibility.md",
   "Diagnostics.md",
   "Troubleshooting.md",
   "SecurityAndSupport.md",
-  "CppAPI.md",
 ] as const;
 
 const navigationGroups = [
   {
     label: "Start",
-    files: ["README.md", "QuickStart.md", "Lifecycle.md"],
+    files: ["Overview.md", "QuickStart.md", "TalkToTheGame.md"],
   },
   {
-    label: "Use Webkiln",
-    files: ["Bridge.md", "API.md", "Input.md", "WorldSpace.md", "Settings.md", "Packaging.md"],
+    label: "Build UI",
+    files: ["HUD.md", "WorldSpace.md", "Input.md", "HtmlElements.md"],
+  },
+  {
+    label: "Reference",
+    files: ["Views.md", "Bridge.md", "Settings.md", "Packaging.md", "CppAPI.md"],
   },
   {
     label: "Support",
     files: ["Compatibility.md", "Diagnostics.md", "Troubleshooting.md", "SecurityAndSupport.md"],
   },
-  {
-    label: "Development",
-    files: ["CppAPI.md"],
-  },
 ] as const;
+
+const slugAliases: Record<string, string> = {
+  readme: "overview",
+  lifecycle: "views",
+  api: "html-elements",
+  "getting-started": "quick-start",
+};
 
 const slugFromFile = (file: string) => file
   .replace(/\.md$/i, "")
@@ -173,9 +182,14 @@ const CodeBlock = ({ code, language }: { code: string; language: string }) => {
   );
 };
 
+const canonicalSlug = (requested: string) => {
+  const resolved = slugAliases[requested] ?? requested;
+  return documentsBySlug.has(resolved) ? resolved : "overview";
+};
+
 const readLocation = () => {
-  const requested = new URLSearchParams(window.location.search).get("doc") ?? "readme";
-  return documentsBySlug.has(requested) ? requested : "readme";
+  const requested = new URLSearchParams(window.location.search).get("doc") ?? "overview";
+  return canonicalSlug(requested);
 };
 
 function WebkilnDocs() {
@@ -198,6 +212,15 @@ function WebkilnDocs() {
     const onPopState = () => setSelectedSlug(readLocation());
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("doc");
+    if (!requested) return;
+    const resolved = canonicalSlug(requested);
+    if (resolved === requested) return;
+    const url = `${window.location.pathname}?doc=${resolved}${window.location.hash}`;
+    window.history.replaceState({}, "", url);
   }, []);
 
   useEffect(() => {
@@ -263,7 +286,7 @@ function WebkilnDocs() {
                       onClick={() => openDocument(document.slug)}
                       key={document.file}
                     >
-                      {document.slug === "readme" ? "Overview" : document.title}
+                      {document.title}
                     </button>
                   );
                 })}

@@ -99,7 +99,7 @@ const WebkilnMarketing = () => {
             </p>
             <div className="btn-group">
               <a href="/webkiln/docs/?doc=quick-start" className="btn btn-primary">
-                Quick start
+                Getting started
               </a>
               <a href="mailto:contact@jggames.dev" className="btn btn-ghost">
                 Contact JG Games

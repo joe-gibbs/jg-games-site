@@ -1,45 +1,64 @@
 # Input
 
-The browser viewport follows the widget's Slate geometry.
+Pointer, keys and gamepad go to the page through the [widget](HUD.md)'s Slate geometry - the browser viewport is the same size as that.
 
-## Pointer input and world input
+## Pointer vs world
 
-Pointer capture stays with the browser until button release, even if the cursor leaves
-the element that started the gesture.
+A click on a normal element stays with the UI and blocks the game. `html` and `body` pass through, so clicks on empty page background still go to the game.
 
-A normal element blocks world input. `html` and `body` pass through. Add
-`data-webkiln-world-input` to another empty layout surface when that element should also
-pass through:
+If you've got a full-screen layout wrapper that should also pass through, mark it with `data-webkiln-world-input`:
 
 ```html
-<main class="fullscreen-layout" data-webkiln-world-input>
-  <button>Open inventory</button>
-</main>
+<div id="root" data-webkiln-world-input>
+  <main class="fullscreen-layout" data-webkiln-world-input>
+    <button>Open inventory</button>
+  </main>
+</div>
 ```
 
-The button still blocks input. Only the marked element itself passes through.
-See [API](API.md#automatic-dom-hit-testing) for cursor selectors.
+That only applies to the element you mark. The button inside still blocks. For decoration that should never hit, use CSS `pointer-events: none`.
 
-## Keyboard and focus
+Irregular artwork (circles, stars, painted buttons) still uses the layout box unless you opt in:
 
-Clicking handled browser content focuses the widget in Slate and CEF.
-When Slate focus leaves, browser focus leaves with it.
+```html
+<button data-webkiln-hit="alpha" style="background: transparent; border: 0; padding: 0">
+  <img src="star.png" alt="">
+  <span>OK</span>
+</button>
+```
 
-Unreal console keys still open the console.
+The control is then shaped like what it paints, including a label that sticks out past the image. Transparent pixels fall through to HTML underneath or to the world. Any non-zero alpha counts. Put the attribute on the control, not on the whole HUD. Unreal `webkiln-texture` native pixels are not sampled; use `mode="dom"` if that image must hole-punch.
 
-## IME
+`border-radius` and `clip-path` already affect Chromium hits without this attribute.
 
-Composition is cancelled when the widget loses focus or switches to another view. A
-world-space widget needs focus through its `WidgetInteractionComponent` before IME or
-keyboard input can reach the browser.
+Once a drag starts, the browser keeps the pointer until you release the button - even if the cursor leaves the element you started on.
 
-## Controller keys
+If your code changes layout, call `window.webkiln.input.refresh()` afterwards.
 
-Configured gamepad keys become browser keyboard events. Defaults are in
-[Project settings](Settings.md#input). Unmapped keys and analogue sticks stay with the game.
+You can map CSS selectors to cursor kinds (`pointer`, `text`, `grab`, `grabbing`, `blocked`, `crosshair`, `help`):
 
-## World-space widgets
+```javascript
+window.webkiln.input.configure({
+  cursorSelectors: {
+    grab: '.pan-canvas',
+    crosshair: '.selection-tool',
+    blocked: '[aria-disabled="true"]',
+  },
+});
+```
 
-See [World-space widgets](WorldSpace.md). Transparent pixels still occupy the Unreal
-widget hit rectangle. After a hit reaches the widget, pass-through areas fall through
-to the game.
+**On Input State Changed** tells you whether the world is blocked and which cursor the DOM wants. That's on the [view](Views.md#status-and-delegates).
+
+## Keyboard
+
+Clicking something the browser handles focuses the widget in Slate and CEF. When Slate focus leaves, browser focus leaves with it.
+
+The Unreal console keys still open the console.
+
+IME composition is cancelled if the widget loses focus or you switch views.
+
+## Gamepad
+
+While the widget has keyboard focus, mapped gamepad keys become browser key events. Defaults are in [Project settings](Settings.md#input). Unmapped keys and analogue sticks stay with the game.
+
+For world-space focus and hits, see [World-space UI](WorldSpace.md).

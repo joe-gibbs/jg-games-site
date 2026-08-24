@@ -1,16 +1,17 @@
 # Diagnostics
 
-Open **Tools > Webkiln Diagnostics**. The same checks are available through
-**Validate Installation**, **Get Runtime Directory** and **Synchronise Automatic
-Packaging**.
+Open **Tools > Webkiln Diagnostics**. The same checks are also on **Validate Installation**,
+**Get Runtime Directory** and **Synchronise Automatic Packaging** - that last one is for [Packaging](Packaging.md).
 
-At runtime: **On Load Failed**, `GetLastError()`, `ExportRuntimeDiagnosticsJson()`.
-CEF logs to `Saved/Webkiln/Logs/cef.log`.
+At runtime you've got **On Load Failed** on the [view](Views.md#status-and-delegates).
+From C++, `GetLastError()` is on that view and `ExportRuntimeDiagnosticsJson()` is on the
+subsystem. CEF logs to `Saved/Webkiln/Logs/cef.log`.
 
 ## DOM automation
 
-Testing nodes return a request ID immediately. Bind **On Test Result** first.
-The payload is `RequestId`, `Command`, `Succeeded` and `ResultJson`.
+Testing nodes return a request ID immediately - bind **On Test Result** first.
+They only run on a Ready `gameui://` view. The payload is `RequestId`, `Command`,
+`Succeeded` and `ResultJson`.
 
 ```json
 {
@@ -34,13 +35,13 @@ Only `id`, `role`, `aria-label` and `data-*` attributes are copied. Text is capp
 | Pick Element for Testing | `{found, x, y, element}` |
 | Click Selector for Testing | `{element}` after `click()` on the first match |
 
-A command error sets `Succeeded` to false. The message is in `ResultJson`.
+If a command errors, `Succeeded` is false and the message is in `ResultJson`.
 
 ## Performance
 
-`GetStatsSnapshot()` returns per-view counters. Look at **CEF Paint FPS** versus
+`GetStatsSnapshot()` (C++) returns per-view counters. Look at **CEF Paint FPS** versus
 **Presented FPS** if frames are being produced faster than Unreal shows them.
 **JavaScript / Style / Layout / Paint** are Chromium phase times in milliseconds.
 
-Bridge **Last Handler** / **Max Handler** are native handling time. Time spent waiting
+[Bridge](Bridge.md) **Last Handler** / **Max Handler** are native handling time. Time spent waiting
 on a Blueprint action is separate.

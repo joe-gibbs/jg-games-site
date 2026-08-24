@@ -12,7 +12,7 @@ const blueprintClipboard = (file: string) =>
 
 const createViewGraph: BlueprintGraphData = {
   title: "Create and display a Webkiln view",
-  description: "Copy these nodes and paste them into a Blueprint event graph.",
+  description: "Copy these nodes into a Blueprint event graph.",
   copyText: blueprintClipboard("create-view.blueprint.txt"),
   nodes: [
     {
@@ -29,7 +29,7 @@ const createViewGraph: BlueprintGraphData = {
       id: "register",
       title: "Register Resource Mount",
       subtitle: "Target is Webkiln Subsystem",
-      tooltip: "Maps a gameui:// host to a project directory for this process.",
+      tooltip: "Points a gameui:// host at a project folder.",
       kind: "function",
       x: 328,
       y: 40,
@@ -41,8 +41,8 @@ const createViewGraph: BlueprintGraphData = {
       ],
       outputs: [
         { id: "then", label: "", type: "exec" },
-        { id: "error", label: "Out Error", type: "string", typeName: "String", tooltip: "Failure text if the mount could not be registered." },
-        { id: "ok", label: "Return Value", type: "boolean", typeName: "Boolean", tooltip: "True if the mount was registered." },
+        { id: "error", label: "Out Error", type: "string", typeName: "String", tooltip: "Failure text if the folder could not be used." },
+        { id: "ok", label: "Return Value", type: "boolean", typeName: "Boolean", tooltip: "True if the host now points at that folder." },
       ],
     },
     {
@@ -66,7 +66,7 @@ const createViewGraph: BlueprintGraphData = {
       width: 300,
       inputs: [
         { id: "view-id", label: "View Id", type: "name", value: "FpsHud", typeName: "Name", tooltip: "Unique name used to find, resize and destroy this view." },
-        { id: "entry", label: "Entry Point", type: "string", value: "gameui://fpsdemo/index.html", typeName: "String", tooltip: "URL loaded by the browser. Use a trusted gameui:// URL." },
+        { id: "entry", label: "Entry Point", type: "string", value: "gameui://fpsdemo/index.html", typeName: "String", tooltip: "Page URL, for example gameui://fpsdemo/index.html." },
       ],
       outputs: [{ id: "result", label: "Webkiln View Init Params", type: "struct", typeName: "Webkiln View Init Params Structure" }],
     },
@@ -268,7 +268,7 @@ const createViewGraph: BlueprintGraphData = {
 
 const objectEventGraph: BlueprintGraphData = {
   title: "Send an Unreal object to JavaScript",
-  description: "Copy these nodes and paste them into a Blueprint event graph.",
+  description: "Copy these nodes into a Blueprint event graph.",
   copyText: blueprintClipboard("dispatch-object.blueprint.txt"),
   nodes: [
     {
@@ -324,7 +324,7 @@ const objectEventGraph: BlueprintGraphData = {
 
 const responseGraph: BlueprintGraphData = {
   title: "Return an existing UObject from a bridge action",
-  description: "Copy these nodes and paste them into a Webkiln Bridge Action graph.",
+  description: "Copy these nodes into a Webkiln Bridge Action graph.",
   copyText: blueprintClipboard("stringify-succeed.blueprint.txt"),
   nodes: [
     {
@@ -397,6 +397,7 @@ const responseGraph: BlueprintGraphData = {
 
 const examples: Record<string, BlueprintGraphData[]> = {
   "quick-start": [createViewGraph],
+  "talk-to-the-game": [objectEventGraph, responseGraph],
   bridge: [objectEventGraph, responseGraph],
 };
 

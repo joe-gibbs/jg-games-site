@@ -1,12 +1,11 @@
 # Packaging
 
-The CEF runtime ships in the package. Configured **Trusted Local Mounts** are packaged
-with the game. Web roots must be inside the project directory.
+The CEF runtime goes into the packaged game.
 
-Mounts added with `RegisterResourceMount` at runtime also need a **Trusted Local Mounts**
-entry, or manage the Unreal packaging entries yourself.
+Your UI folders are packaged with the game if **Automatically Stage Trusted Local Mounts** is on. That's the [Resources](Settings.md#resources) list. Those folders have to live inside the project.
 
-See [Compatibility](Compatibility.md) for which Unreal Engine minor version to install.
+If you only added a folder with [`RegisterResourceMount`](CppAPI.md) at runtime, you still need an entry under **Trusted Local Mounts** - or add the folders to **Additional Non-Asset Directories to Package** yourself.
 
-Watermarked evaluation builds display the Webkiln logo in the bottom-right of every
-view. Licensed copies from Fab do not. `IsWatermarked` reports the compiled edition.
+Engine versions are in [Compatibility](Compatibility.md).
+
+Watermarked evaluation builds draw the Webkiln logo in the bottom-right of every view. Licensed copies from Fab don't. `IsWatermarked` tells you which edition you compiled - it's on the [C++ API](CppAPI.md). If you see the logo and didn't expect it, see [Troubleshooting](Troubleshooting.md).

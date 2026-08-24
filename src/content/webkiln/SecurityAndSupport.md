@@ -1,8 +1,7 @@
 # Security and support
 
-A specific CEF build is included. Runtime files must match that build.
+The page can only read files from its UI folder - that's the list in [Project settings](Settings.md#resources). Network URLs need an origin in **Allowed Remote Origins**, or **Dangerously Allow All Https** for any `https://` / `wss://` URL. Matching rules are in [Project settings](Settings.md#security).
 
-Paths stay inside the mount. Network access requires an origin in **Allowed Remote Origins**.
-`window.gameUI` is only on `gameui://` pages.
+[`window.gameUI`](TalkToTheGame.md) only exists on `gameui://` pages. Remote pages never receive it, even with the HTTPS flag on.
 
 Report security issues to `contact@jggames.dev`.

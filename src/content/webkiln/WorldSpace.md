@@ -1,9 +1,23 @@
-# World-space widgets
+# World-space UI
 
-Assign the view to a `UWebkilnWidget` and use that widget as the class of a `WidgetComponent` in World space.
+The same [`UWebkilnWidget`](HUD.md) can sit on a surface in the level - terminals, in-world screens, floating labels, that sort of thing.
 
-Match the component draw size to the view's browser size.
+## Set up
 
-Forward interaction through a `WidgetInteractionComponent`.
+1. Create a view as in [Getting started](QuickStart.md). Set an explicit [width and height](Views.md#size-and-render-scale) that match the component draw size.
+2. Add a **Widget Component** to an actor. Set **Space** to **World**. Set **Widget Class** to **Webkiln Widget**, or a user widget that contains one.
+3. Match **Draw Size** on the component to the view's browser size.
+4. At Begin Play, **Get User Widget Object** on the component, cast to **Webkiln Widget**, and **Set View**.
+5. Add a **Widget Interaction** component to the player (or the interacting pawn) and aim it at the widget component so clicks and keys reach the page.
 
-Transparent pixels are still part of the Unreal widget hit-test rectangle. Hit tests that follow the visible shape belong in the game.
+## Hits
+
+Transparent pixels still count as part of the Unreal widget's hit rectangle. Unreal hits the component first, then Webkiln decides whether that point is actually a DOM hit or should [pass through](Input.md#pointer-vs-world). Anything that passes through goes to the game.
+
+If you need a trace that follows the visible shape before the widget is even hit, that's on you in game code.
+
+## Keyboard and IME
+
+The widget needs focus through the `WidgetInteractionComponent` before [keyboard input or IME](Input.md#keyboard) can reach the page. Composition is cancelled if the widget loses focus or you switch views.
+
+Pointer pass-through, capture and gamepad are in [Input](Input.md).

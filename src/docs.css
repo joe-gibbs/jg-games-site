@@ -183,6 +183,15 @@ html::-webkit-scrollbar-corner,
   line-height: 1.75;
 }
 .docs-main p { margin: 0 0 1.15rem; }
+.docs-main article > p img,
+.docs-main article > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 1.4rem 0 1.8rem;
+  border: 1px solid var(--docs-line);
+  background: var(--docs-code);
+}
 .docs-main ul,
 .docs-main ol { margin: 1rem 0 1.5rem; padding-left: 1.4rem; }
 .docs-main li { padding-left: 0.35rem; margin: 0.38rem 0; }
@@ -198,6 +207,21 @@ html::-webkit-scrollbar-corner,
   font-size: 0.88em;
 }
 .docs-main strong { color: var(--docs-ink); font-weight: 500; }
+.docs-main article a {
+  color: var(--docs-orange-soft);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 137, 80, 0.4);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+.docs-main article a:hover {
+  color: #fff;
+  text-decoration-color: var(--docs-orange);
+}
+.docs-main article a code {
+  color: inherit;
+  border-color: rgba(255, 137, 80, 0.35);
+}
 .docs-main article > h1:first-child { margin-bottom: 1.7rem; }
 .docs-main article > h1:first-child + p { color: var(--docs-ink); font-size: 1.12rem; }
 
@@ -375,8 +399,13 @@ html::-webkit-scrollbar-corner,
 .docs-footer div { display: flex; flex-direction: column; }
 .docs-footer strong { font-family: "Marcellus", serif; }
 .docs-footer span { color: var(--docs-faint); font-size: 0.78rem; }
-.docs-footer > a { margin-left: auto; color: var(--docs-soft); font-size: 0.85rem; }
-.docs-footer > a:hover { color: var(--docs-orange-soft); }
+.docs-main article .docs-footer a {
+  margin-left: auto;
+  color: var(--docs-soft);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.docs-main article .docs-footer a:hover { color: var(--docs-orange-soft); }
 
 .docs-blueprints {
   margin-top: 2.5rem;

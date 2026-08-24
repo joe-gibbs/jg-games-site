@@ -528,7 +528,7 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
                         <BlueprintPinText
                           text={pin.label}
                           onHide={() => undefined}
-                          onShow={(text, element) => showTooltip(element, {
+                          onShow={(_text, element) => showTooltip(element, {
                             title: pin.label,
                             typeName: pin.typeName ?? pinTypeNames[pin.type],
                             body: pin.tooltip,
@@ -583,7 +583,7 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
                         <BlueprintPinText
                           text={pin.label}
                           onHide={() => undefined}
-                          onShow={(text, element) => showTooltip(element, {
+                          onShow={(_text, element) => showTooltip(element, {
                             title: pin.label,
                             typeName: pin.typeName ?? pinTypeNames[pin.type],
                             body: pin.tooltip,
