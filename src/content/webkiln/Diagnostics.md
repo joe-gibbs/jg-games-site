@@ -7,6 +7,29 @@ At runtime you've got **On Load Failed** on the [view](Views.md#status-and-deleg
 From C++, `GetLastError()` is on that view and `ExportRuntimeDiagnosticsJson()` is on the
 subsystem. CEF logs to `Saved/Webkiln/Logs/cef.log`.
 
+## DevTools
+
+After Play, open the Unreal console (`~`) and run:
+
+```text
+Webkiln.OpenDevTools
+```
+
+That opens Chromium DevTools for the only live view. If more than one is live, pass the
+[view id](Views.md#init-params):
+
+```text
+Webkiln.OpenDevTools MainUI
+```
+
+**Open DevTools** on the view does the same thing. From C++, `View->OpenDevTools()`.
+
+Remote debugging is at `http://localhost:9222` unless you change [Remote Debugging Port](Settings.md#development).
+The address is also written to the Unreal log.
+
+**Enable DevTools** must be on (the default). A settings change needs a process restart.
+The view has to have started. Shipping builds do not register the console command.
+
 ## DOM automation
 
 Testing nodes return a request ID immediately - bind **On Test Result** first.

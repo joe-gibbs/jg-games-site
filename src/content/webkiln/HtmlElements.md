@@ -16,7 +16,7 @@ Put an Unreal texture in the page with `webkiln-texture`.
 
 Bind the source with **Set Webkiln Texture** on the [view](Views.md) or the [widget](HUD.md). That takes a `UTexture` - assets, render targets, media textures, canvas render targets. **Clear Webkiln Texture** drops a runtime source. The widget also has a **Texture Sources** map you can fill in the editor.
 
-- `mode="native"` (default when `source` is set) draws the Unreal texture on top of the page. `native-layer="below"` draws it underneath - use that with transparent overlay pages. Opacity, clipping, stacking and `object-fit` work. Pointer input is ordinary [DOM input](Input.md).
+- `mode="native"` (default when `source` is set) draws the Unreal texture on top of the page. `native-layer="below"` draws it underneath - use that with transparent overlay pages. Opacity, clipping, stacking and `object-fit` work. Pointer input is ordinary [DOM input](Input.md). Native pixels are not sampled for [hit testing](HitTesting.md).
 - `mode="dom"` shows `src` as a real `<img>`, so CSS transforms, masks, filters and border radii go through Chromium.
 - `mode="auto"` picks native when `source` is set, otherwise DOM.
 
@@ -36,6 +36,13 @@ Use `webkiln-anchor` when one view needs a bunch of labels or controls at differ
 ```
 
 [Create a second view](Views.md#create-a-view) for the atlas page and set it as the main view **Anchor Atlas View**. **Set Anchor Placements** / **Set Anchor Placement** supply positions. **Bind Anchor to Component** follows a scene component or socket each tick.
+
+The graphs below create that atlas view and bind one element to a component.
+
+```blueprint
+set-atlas
+bind-anchor
+```
 
 `anchor` is CSS-like - pixels or percentages - and defaults to the centre of the element. **Layer** is draw order. **Hit Priority** on a placement breaks ties; if you don't set it, the draw layer is used. **Bind Anchor to Component** does not have a Hit Priority pin.
 
@@ -62,4 +69,4 @@ const unsubscribe = window.webkiln.localisation.subscribe(locale => render(local
 
 Chromium audio is captured by default into one Unreal audio component per view. You set the routing on the view init params - see [Views](Views.md#init-params). After creation, **Set Browser Audio Volume** and **Set Browser Audio Muted** change the Unreal-side component.
 
-Clicks versus the world are covered in [Input](Input.md).
+Clicks versus the world are covered in [Click-through](ClickThrough.md).

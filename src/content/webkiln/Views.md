@@ -8,6 +8,12 @@ To put one on the HUD, see [Getting started](QuickStart.md). The widget itself i
 
 Both **Create View** and **Create View Async** give you a `UWebkilnView` immediately and start loading in the background. Bind **On Document Ready**, **On Ready** and **On Load Failed** before you use the page.
 
+The graph below does this in Blueprint.
+
+```blueprint
+create-view
+```
+
 ```cpp
 UWebkilnSubsystem* Webkiln = GameInstance->GetSubsystem<UWebkilnSubsystem>();
 
@@ -77,7 +83,7 @@ Taking the widget off doesn't close the view. Call **Close** or **Destroy View**
 | Failed | Close it and create it again before reuse. Creating the same ID again returns this failed view. |
 | On Console Message | JavaScript `console` output from this view. |
 | On Closed | Browser and native resources have closed. |
-| On Input State Changed | World-input block flag and DOM cursor kind. See [Input](Input.md). |
+| On Input State Changed | World-input block flag and DOM cursor kind. See [Click-through](ClickThrough.md) and [Input](Input.md). |
 
 **Reload** sends [texture](HtmlElements.md#unreal-textures) layout, [anchors](HtmlElements.md#screen-and-world-anchors), [input](Input.md) state and [localisation](HtmlElements.md#unreal-localisation) again once the new document is ready. Call `markReady` again after that.
 

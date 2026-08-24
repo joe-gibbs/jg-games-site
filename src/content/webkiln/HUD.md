@@ -9,6 +9,12 @@ For a HUD, you add a `UWebkilnWidget` to the viewport. The widget draws the [vie
 3. **Set View** on the widget.
 4. **Add to Viewport**.
 
+The graph below does this in Blueprint.
+
+```blueprint
+create-view
+```
+
 You can also drop `UWebkilnWidget` inside your own UMG widget and add that instead.
 
 ![UMG widget whose parent class is a Webkiln host widget](/webkiln/docs/hud-umg.png)
@@ -29,4 +35,4 @@ Opaque views paint a black cover until the page calls [`gameUI.markReady()`](Tal
 
 **Render Scale** and the rest of the view options are in [Views](Views.md#size-and-render-scale).
 
-Textures, localisation and anchors are in [HTML elements](HtmlElements.md). Input is in [Input](Input.md). For the same widget in the level, see [World-space UI](WorldSpace.md).
+Textures, localisation and anchors are in [HTML elements](HtmlElements.md). Clicks versus the world are in [Click-through](ClickThrough.md). Keyboard and gamepad are in [Input](Input.md). For the same widget in the level, see [World-space UI](WorldSpace.md).

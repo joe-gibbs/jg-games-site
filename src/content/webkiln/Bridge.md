@@ -82,6 +82,13 @@ unsubscribe();
 | Dispatch Webkiln Event (JSON Object) | A Webkiln JSON object that you populate. |
 | Dispatch Webkiln Event (JSON String) | Any JSON value that is already encoded. |
 
+The graphs below dispatch an Unreal object and a struct.
+
+```blueprint
+dispatch-object
+dispatch-struct
+```
+
 ## Unreal object serialisation
 
 **Stringify Unreal Object** returns the JSON string.
@@ -103,7 +110,11 @@ Unreal's JSON field names lowercase the first character of the property name.
 Owned instanced subobjects are inlined; other UObject pointers become Unreal reference strings.
 
 To return an existing UObject from a bridge request, feed **Stringify Unreal Object**
-into **Succeed**.
+into **Succeed**. The graph below does this.
+
+```blueprint
+stringify-succeed
+```
 
 ## Generated TypeScript
 

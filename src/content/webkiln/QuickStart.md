@@ -52,6 +52,10 @@ Create a [view](Views.md) from the game-instance subsystem, put it on a `UWebkil
 
 The graph below does this in Blueprint - copy it into an actor that runs on Begin Play.
 
+```blueprint
+create-view
+```
+
 ```cpp
 UWebkilnSubsystem* Webkiln = GetGameInstance()->GetSubsystem<UWebkilnSubsystem>();
 

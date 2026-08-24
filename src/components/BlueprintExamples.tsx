@@ -395,20 +395,245 @@ const responseGraph: BlueprintGraphData = {
   ],
 };
 
-const examples: Record<string, BlueprintGraphData[]> = {
-  "quick-start": [createViewGraph],
-  "talk-to-the-game": [objectEventGraph, responseGraph],
-  bridge: [objectEventGraph, responseGraph],
+const setAtlasGraph: BlueprintGraphData = {
+  title: "Create an atlas view and assign it",
+  description: "Copy these nodes into a Blueprint event graph.",
+  copyText: blueprintClipboard("set-atlas.blueprint.txt"),
+  nodes: [
+    {
+      id: "begin",
+      title: "Event Begin Play",
+      tooltip: "Runs once when this actor begins play.",
+      kind: "event",
+      x: 24,
+      y: 40,
+      width: 210,
+      outputs: [{ id: "then", label: "", type: "exec" }],
+    },
+    {
+      id: "subsystem",
+      title: "Get Game Instance Subsystem",
+      subtitle: "Webkiln Subsystem",
+      tooltip: "The game-instance subsystem that owns views.",
+      kind: "pure",
+      x: 24,
+      y: 160,
+      width: 250,
+      outputs: [{ id: "result", label: "Return Value", type: "object", typeName: "Webkiln Subsystem Object Reference" }],
+    },
+    {
+      id: "params",
+      title: "Make Webkiln View Init Params",
+      tooltip: "Build the struct passed to Create View Async.",
+      kind: "struct",
+      x: 24,
+      y: 280,
+      width: 300,
+      inputs: [
+        { id: "view-id", label: "View Id", type: "name", value: "FpsWorldHealth", typeName: "Name", tooltip: "Unique name used to find, resize and destroy this view." },
+        { id: "entry", label: "Entry Point", type: "string", value: "gameui://fpsdemo/world-health.html", typeName: "String", tooltip: "Atlas page URL." },
+        { id: "width", label: "Width", type: "number", value: "256", typeName: "Integer", tooltip: "Browser width in pixels." },
+        { id: "height", label: "Height", type: "number", value: "512", typeName: "Integer", tooltip: "Browser height in pixels." },
+        { id: "transparent", label: "Transparent", type: "boolean", value: "true", typeName: "Boolean", tooltip: "Alpha background so Unreal stays visible around the labels." },
+      ],
+      outputs: [{ id: "result", label: "Webkiln View Init Params", type: "struct", typeName: "Webkiln View Init Params Structure" }],
+    },
+    {
+      id: "create",
+      title: "Create View Async",
+      subtitle: "Target is Webkiln Subsystem",
+      tooltip: "Creates a view and starts loading without blocking the game thread.",
+      kind: "function",
+      x: 400,
+      y: 24,
+      width: 272,
+      inputs: [
+        { id: "exec", label: "", type: "exec" },
+        { id: "target", label: "Target", type: "object", typeName: "Webkiln Subsystem Object Reference" },
+        { id: "params", label: "Params", type: "struct", typeName: "Webkiln View Init Params Structure (by ref)" },
+      ],
+      outputs: [
+        { id: "then", label: "", type: "exec" },
+        { id: "view", label: "Return Value", type: "object", typeName: "Webkiln View Object Reference" },
+      ],
+    },
+    {
+      id: "hud-view",
+      title: "Get HudView",
+      kind: "pure",
+      x: 720,
+      y: 240,
+      width: 200,
+      outputs: [{ id: "view", label: "HudView", type: "object", typeName: "Webkiln View Object Reference" }],
+    },
+    {
+      id: "set-atlas",
+      title: "Set Anchor Atlas View",
+      subtitle: "Target is Webkiln View",
+      tooltip: "The HUD view draws webkiln-anchor elements from this atlas page.",
+      kind: "function",
+      x: 760,
+      y: 24,
+      width: 280,
+      inputs: [
+        { id: "exec", label: "", type: "exec" },
+        { id: "target", label: "Target", type: "object", typeName: "Webkiln View Object Reference", tooltip: "The HUD view that will composite the anchors." },
+        { id: "atlas", label: "In Atlas View", type: "object", typeName: "Webkiln View Object Reference", tooltip: "The off-screen page that contains the webkiln-anchor elements." },
+      ],
+      outputs: [{ id: "then", label: "", type: "exec" }],
+    },
+  ],
+  connections: [
+    { from: ["begin", "then"], to: ["create", "exec"] },
+    { from: ["subsystem", "result"], to: ["create", "target"] },
+    { from: ["params", "result"], to: ["create", "params"] },
+    { from: ["create", "then"], to: ["set-atlas", "exec"] },
+    { from: ["create", "view"], to: ["set-atlas", "atlas"] },
+    { from: ["hud-view", "view"], to: ["set-atlas", "target"] },
+  ],
 };
 
-export const BlueprintExamples = ({ document }: { document: string }) => {
-  const graphs = examples[document];
-  if (!graphs) return null;
+const bindAnchorGraph: BlueprintGraphData = {
+  title: "Bind an anchor to a scene component",
+  description: "Copy these nodes into a Blueprint event graph.",
+  copyText: blueprintClipboard("bind-anchor.blueprint.txt"),
+  nodes: [
+    {
+      id: "event",
+      title: "Bind Npc Health",
+      tooltip: "Call this once you have the HUD view and the actor to follow.",
+      kind: "event",
+      x: 24,
+      y: 48,
+      width: 220,
+      outputs: [{ id: "then", label: "", type: "exec" }],
+    },
+    {
+      id: "hud-view",
+      title: "Get HudView",
+      kind: "pure",
+      x: 48,
+      y: 220,
+      width: 200,
+      outputs: [{ id: "view", label: "HudView", type: "object", typeName: "Webkiln View Object Reference" }],
+    },
+    {
+      id: "capsule",
+      title: "Get Capsule Component",
+      kind: "pure",
+      x: 48,
+      y: 320,
+      width: 230,
+      outputs: [{ id: "component", label: "Capsule Component", type: "object", typeName: "Capsule Component Object Reference" }],
+    },
+    {
+      id: "bind",
+      title: "Bind Anchor to Component",
+      subtitle: "Target is Webkiln View",
+      tooltip: "Projects this component into a webkiln-anchor placement every frame.",
+      kind: "function",
+      x: 360,
+      y: 24,
+      width: 300,
+      inputs: [
+        { id: "exec", label: "", type: "exec" },
+        { id: "target", label: "Target", type: "object", typeName: "Webkiln View Object Reference" },
+        { id: "key", label: "Key", type: "name", value: "npc-0", typeName: "Name", tooltip: "Must match the webkiln-anchor source on the atlas page." },
+        { id: "component", label: "Component", type: "object", typeName: "Scene Component Object Reference", tooltip: "The scene component or socket to follow." },
+        { id: "offset", label: "World Offset", type: "struct", value: "0, 0, 18", typeName: "Vector", tooltip: "Added to the component location in world space." },
+        { id: "scale", label: "Scale", type: "number", value: "1.0", typeName: "Float" },
+        { id: "opacity", label: "Opacity", type: "number", value: "1.0", typeName: "Float" },
+        { id: "layer", label: "Layer", type: "number", value: "0", typeName: "Integer", tooltip: "Draw order. Higher draws more on top." },
+      ],
+      outputs: [{ id: "then", label: "", type: "exec" }],
+    },
+  ],
+  connections: [
+    { from: ["event", "then"], to: ["bind", "exec"] },
+    { from: ["hud-view", "view"], to: ["bind", "target"] },
+    { from: ["capsule", "component"], to: ["bind", "component"] },
+  ],
+};
+
+const dispatchStructGraph: BlueprintGraphData = {
+  title: "Send a Blueprint struct to JavaScript",
+  description: "Copy these nodes into a Blueprint event graph.",
+  copyText: blueprintClipboard("dispatch-struct.blueprint.txt"),
+  nodes: [
+    {
+      id: "event",
+      title: "Dispatch Hud State",
+      tooltip: "Custom event the FPS demo calls from a timer once the HUD is ready.",
+      kind: "event",
+      x: 24,
+      y: 80,
+      width: 230,
+      outputs: [{ id: "then", label: "", type: "exec" }],
+    },
+    {
+      id: "view",
+      title: "Get HudView",
+      kind: "pure",
+      x: 40,
+      y: 24,
+      width: 200,
+      outputs: [{ id: "view", label: "HudView", type: "object", typeName: "Webkiln View Object Reference" }],
+    },
+    {
+      id: "state",
+      title: "Get Hud State",
+      tooltip: "The FPS demo's HUD struct - health, ammo, and the rest.",
+      kind: "pure",
+      x: 40,
+      y: 220,
+      width: 220,
+      outputs: [{ id: "state", label: "Return Value", type: "struct", typeName: "Shooter Hud State Structure" }],
+    },
+    {
+      id: "dispatch",
+      title: "Dispatch Webkiln Event (Struct)",
+      subtitle: "Target is Webkiln View",
+      tooltip: "Serialise a Blueprint struct and send it to gameUI.on.",
+      kind: "function",
+      x: 400,
+      y: 64,
+      width: 330,
+      inputs: [
+        { id: "exec", label: "", type: "exec" },
+        { id: "target", label: "Target", type: "object", typeName: "Webkiln View Object Reference" },
+        { id: "name", label: "Event Name", type: "string", value: "fps.state", typeName: "String", tooltip: "Name JavaScript subscribed to with gameUI.on." },
+        { id: "payload", label: "Payload", type: "struct", typeName: "Shooter Hud State Structure", tooltip: "Reflected struct fields become the JSON payload." },
+      ],
+      outputs: [
+        { id: "then", label: "", type: "exec" },
+        { id: "success", label: "Return Value", type: "boolean", typeName: "Boolean" },
+        { id: "error", label: "Out Error", type: "string", typeName: "String" },
+      ],
+    },
+  ],
+  connections: [
+    { from: ["event", "then"], to: ["dispatch", "exec"] },
+    { from: ["view", "view"], to: ["dispatch", "target"] },
+    { from: ["state", "state"], to: ["dispatch", "payload"] },
+  ],
+};
+
+const blueprintGraphs: Record<string, BlueprintGraphData> = {
+  "create-view": createViewGraph,
+  "dispatch-object": objectEventGraph,
+  "dispatch-struct": dispatchStructGraph,
+  "stringify-succeed": responseGraph,
+  "set-atlas": setAtlasGraph,
+  "bind-anchor": bindAnchorGraph,
+};
+
+export const BlueprintEmbed = ({ ids }: { ids: string[] }) => {
+  const graphs = ids.map((id) => blueprintGraphs[id]).filter(Boolean);
+  if (!graphs.length) return null;
 
   return (
-    <section className="docs-blueprints" aria-labelledby={`${document}-blueprints`}>
-      <h2 id={`${document}-blueprints`}>Blueprint examples</h2>
+    <div className="docs-blueprints">
       {graphs.map((graph) => <BlueprintGraph graph={graph} key={graph.title} />)}
-    </section>
+    </div>
   );
 };

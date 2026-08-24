@@ -11,7 +11,8 @@ import json from "highlight.js/lib/languages/json";
 import powershell from "highlight.js/lib/languages/powershell";
 import typescript from "highlight.js/lib/languages/typescript";
 import xml from "highlight.js/lib/languages/xml";
-import { BlueprintExamples } from "./components/BlueprintExamples";
+import { BlueprintEmbed } from "./components/BlueprintExamples";
+import { DocsSearch } from "./components/DocsSearch";
 import { LanguageIcon } from "./components/LanguageIcon";
 
 hljs.registerLanguage("bash", bash);
@@ -49,6 +50,8 @@ const documentOrder = [
   "HUD.md",
   "WorldSpace.md",
   "Input.md",
+  "ClickThrough.md",
+  "HitTesting.md",
   "HtmlElements.md",
   "Views.md",
   "Bridge.md",
@@ -68,7 +71,7 @@ const navigationGroups = [
   },
   {
     label: "Build UI",
-    files: ["HUD.md", "WorldSpace.md", "Input.md", "HtmlElements.md"],
+    files: ["HUD.md", "WorldSpace.md", "Input.md", "ClickThrough.md", "HitTesting.md", "HtmlElements.md"],
   },
   {
     label: "Reference",
@@ -85,6 +88,9 @@ const slugAliases: Record<string, string> = {
   lifecycle: "views",
   api: "html-elements",
   "getting-started": "quick-start",
+  "pointer-vs-world": "click-through",
+  "world-input": "click-through",
+  "webkiln-hit": "hit-testing",
 };
 
 const slugFromFile = (file: string) => file
@@ -236,6 +242,9 @@ function WebkilnDocs() {
     code: ({ className, children }: { className?: string; children?: ReactNode }) => {
       const language = className?.match(/language-([\w-]+)/)?.[1];
       const code = String(children ?? "").replace(/\n$/, "");
+      if (language === "blueprint") {
+        return <BlueprintEmbed ids={code.split(/\s+/).filter(Boolean)} />;
+      }
       return language ? <CodeBlock code={code} language={language} /> : <code>{children}</code>;
     },
     table: ({ children }: { children?: ReactNode }) => (
@@ -272,6 +281,10 @@ function WebkilnDocs() {
 
       <div className="docs-layout">
         <aside className="docs-sidebar">
+          <DocsSearch
+            documents={documents}
+            onNavigate={(slug, heading) => openDocument(slug, heading ?? "")}
+          />
           <nav aria-label="Webkiln documentation">
             {navigationGroups.map((group) => (
               <div className="docs-nav-group" key={group.label}>
@@ -300,7 +313,6 @@ function WebkilnDocs() {
             <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
               {selectedDocument.source}
             </Markdown>
-            <BlueprintExamples document={selectedDocument.slug} />
             <footer className="docs-footer">
               <img src="/webkiln-logo.svg" alt="" />
               <div>

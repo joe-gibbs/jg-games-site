@@ -45,6 +45,10 @@ If you leave the payload off, it's sent as JSON `null`. If Unreal fails the requ
 
 **Stringify Unreal Object** turns an object into JSON. Feed that into **Succeed**. The graph below does this.
 
+```blueprint
+stringify-succeed
+```
+
 ```cpp
 UPROPERTY(BlueprintReadWrite)
 FString DisplayName = TEXT("Marcus");
@@ -67,4 +71,9 @@ const unsubscribe = gameUI.on('player.updated', player => {
 unsubscribe();
 ```
 
-From Blueprint, use **Dispatch Webkiln Event** - there's a variant for a struct, an Unreal object, a JSON object, or a JSON string. The graph below dispatches an Unreal object.
+From Blueprint, use **Dispatch Webkiln Event** - there's a variant for a struct, an Unreal object, a JSON object, or a JSON string. The graphs below dispatch an Unreal object and a struct.
+
+```blueprint
+dispatch-object
+dispatch-struct
+```
