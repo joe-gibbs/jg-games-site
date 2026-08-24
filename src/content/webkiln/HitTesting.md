@@ -13,6 +13,6 @@ This is for painted controls - a star, a round button - where you only want clic
 
 The star is clickable, and so is the OK label, even if it sits over empty space - that text is still painted. Put the attribute on the control you're shaping.
 
-This only sees HTML. A [`webkiln-texture`](HtmlElements.md#unreal-textures) in native mode is Unreal drawing on top of the page, so those pixels aren't there to test. If the texture needs to be part of the hit, put it in the page with `mode="dom"`.
+This only sees HTML. A [`webkiln-texture`](Textures.md) in native mode is Unreal drawing on top of the page, so those pixels aren't there to test. If the texture needs to be part of the hit, put it in the page with `mode="dom"`.
 
 Full-screen wrappers are [Click-through](ClickThrough.md). Keyboard and gamepad are in [Input](Input.md).

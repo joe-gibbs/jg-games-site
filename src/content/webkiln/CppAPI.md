@@ -25,7 +25,7 @@ UWebkilnSubsystem* Webkiln = GameInstance->GetSubsystem<UWebkilnSubsystem>();
 UMG and Slate present. `GetLastError()` is C++ only - Blueprint uses **On Load Failed**.
 
 [`UWebkilnWidget::SetView()`](Views.md#attach-the-view) attaches a view. The subsystem owns the view.
-The widget can hold [texture sources](HtmlElements.md#unreal-textures), an [anchor-atlas](HtmlElements.md#screen-and-world-anchors) view and a [localisation](HtmlElements.md#unreal-localisation) String Table.
+The widget can hold [texture sources](Textures.md), an [anchor-atlas](HtmlElements.md#screen-and-world-anchors) view and a [localisation](HtmlElements.md#unreal-localisation) String Table.
 `SWebkilnWidget` is public for Slate.
 
 `RegisterResourceMount` needs a directory that exists and a valid host. Relative paths are

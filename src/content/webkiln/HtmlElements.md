@@ -4,26 +4,13 @@ These are the custom elements and helpers you can use in the page.
 
 ## Unreal textures
 
-Put an Unreal texture in the page with `webkiln-texture`.
+[`webkiln-texture`](Textures.md) puts a live Unreal texture in the page - assets, render targets, media textures. The FPS sample uses it for nearest-enemy scene captures.
 
 ```html
-<webkiln-texture
-  source="portrait.face"
-  alt="Character preview"
-  style="width: 320px; height: 320px; object-fit: cover">
-</webkiln-texture>
+<webkiln-texture source="portrait.0" mode="native" alt=""></webkiln-texture>
 ```
 
-Bind the source with **Set Webkiln Texture** on the [view](Views.md) or the [widget](HUD.md). That takes a `UTexture` - assets, render targets, media textures, canvas render targets. **Clear Webkiln Texture** drops a runtime source. The widget also has a **Texture Sources** map you can fill in the editor.
-
-- `mode="native"` (default when `source` is set) draws the Unreal texture on top of the page. `native-layer="below"` draws it underneath - use that with transparent overlay pages. Opacity, clipping, stacking and `object-fit` work. Pointer input is ordinary [DOM input](Input.md). Native pixels are not sampled for [hit testing](HitTesting.md).
-- `mode="dom"` shows `src` as a real `<img>`, so CSS transforms, masks, filters and border radii go through Chromium.
-- `mode="auto"` picks native when `source` is set, otherwise DOM.
-
-```html
-<webkiln-texture mode="dom" src="gameui://app/images/frame.png"></webkiln-texture>
-<webkiln-texture mode="native" source="scene.preview" native-layer="below"></webkiln-texture>
-```
+Bind the source with **Set Webkiln Texture**. Native vs DOM, `native-layer`, and the FPS cards are on [Unreal textures](Textures.md).
 
 ## Screen and world anchors
 

@@ -67,17 +67,19 @@ When a `UWebkilnWidget` resizes, the browser viewport and render target follow. 
 
 ## Attach the view
 
-Assign the view with **Set View**. Switching views clears [texture bindings](HtmlElements.md#unreal-textures) this widget applied to the previous view, and cancels [IME](Input.md#keyboard) if a composition is in progress. The widget then applies its textures, [anchor atlas](HtmlElements.md#screen-and-world-anchors) and string table to the new view. The previous view keeps whatever atlas it already had. The subsystem still owns both views.
+Assign the view with **Set View**. Switching views clears [texture bindings](Textures.md) this widget applied to the previous view, and cancels [IME](Input.md#keyboard) if a composition is in progress. The widget then applies its textures, [anchor atlas](HtmlElements.md#screen-and-world-anchors) and string table to the new view. The previous view keeps whatever atlas it already had. The subsystem still owns both views.
 
 Taking the widget off doesn't close the view. Call **Close** or **Destroy View** for that.
 
 ## Status and delegates
 
+The two ready steps are in [Talk to the game](TalkToTheGame.md#when-is-the-page-ready).
+
 | Status or delegate | Meaning |
 |---|---|
-| On Document Ready | Main document loaded. [`gameUI`](TalkToTheGame.md) and [page helpers](HtmlElements.md) are injected. `webkiln:runtime-ready` is dispatched on `gameui://` pages. |
-| Document Ready | The page can `gameUI.request`. Pushed events from Unreal are held. The widget still paints a black cover. |
-| On Ready | The page called `gameUI.markReady()`. Remote pages fire this after load. After a reload the page must call `markReady` again. |
+| On Document Ready | Document loaded and `gameUI` installed. Same moment as `webkiln:runtime-ready`. |
+| Document Ready | The page can `gameUI.request`. Events from Unreal are held. |
+| On Ready | The page called `gameUI.markReady()`. |
 | Ready | The cover fades. Queued Unreal events flush. [Input](Input.md) is separate - it follows DOM hit testing, not this status. |
 | On Load Failed | CEF startup, navigation or rendering failed. Error text is in the delegate. |
 | Failed | Close it and create it again before reuse. Creating the same ID again returns this failed view. |
@@ -85,7 +87,7 @@ Taking the widget off doesn't close the view. Call **Close** or **Destroy View**
 | On Closed | Browser and native resources have closed. |
 | On Input State Changed | World-input block flag and DOM cursor kind. See [Click-through](ClickThrough.md) and [Input](Input.md). |
 
-**Reload** sends [texture](HtmlElements.md#unreal-textures) layout, [anchors](HtmlElements.md#screen-and-world-anchors), [input](Input.md) state and [localisation](HtmlElements.md#unreal-localisation) again once the new document is ready. Call `markReady` again after that.
+**Reload** sends [texture](Textures.md) layout, [anchors](HtmlElements.md#screen-and-world-anchors), [input](Input.md) state and [localisation](HtmlElements.md#unreal-localisation) again once the new document is ready. Call `markReady` again after that - see [Talk to the game](TalkToTheGame.md#when-is-the-page-ready).
 
 ## Close a view
 

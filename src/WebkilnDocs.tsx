@@ -49,6 +49,7 @@ const documentOrder = [
   "TalkToTheGame.md",
   "HUD.md",
   "WorldSpace.md",
+  "Textures.md",
   "Input.md",
   "ClickThrough.md",
   "HitTesting.md",
@@ -71,7 +72,7 @@ const navigationGroups = [
   },
   {
     label: "Build UI",
-    files: ["HUD.md", "WorldSpace.md", "Input.md", "ClickThrough.md", "HitTesting.md", "HtmlElements.md"],
+    files: ["HUD.md", "WorldSpace.md", "Textures.md", "Input.md", "ClickThrough.md", "HitTesting.md", "HtmlElements.md"],
   },
   {
     label: "Reference",
@@ -91,6 +92,8 @@ const slugAliases: Record<string, string> = {
   "pointer-vs-world": "click-through",
   "world-input": "click-through",
   "webkiln-hit": "hit-testing",
+  "webkiln-texture": "textures",
+  "unreal-textures": "textures",
 };
 
 const slugFromFile = (file: string) => file

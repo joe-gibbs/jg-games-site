@@ -31,8 +31,8 @@ Width and height `0` at creation follow the player viewport. After that the widg
 
 For a transparent background, set **Transparent** on the [view init params](Views.md#init-params), or **Use Default Transparency** and the **Default Transparent** [project setting](Settings.md#runtime).
 
-Opaque views paint a black cover until the page calls [`gameUI.markReady()`](TalkToTheGame.md). Transparent HUDs don't.
+Opaque views paint a black cover until the page calls [`gameUI.markReady()`](TalkToTheGame.md#when-is-the-page-ready). Transparent HUDs don't.
 
 **Render Scale** and the rest of the view options are in [Views](Views.md#size-and-render-scale).
 
-Textures, localisation and anchors are in [HTML elements](HtmlElements.md). Clicks versus the world are in [Click-through](ClickThrough.md). Keyboard and gamepad are in [Input](Input.md). For the same widget in the level, see [World-space UI](WorldSpace.md).
+[Unreal textures](Textures.md), localisation and anchors are in [HTML elements](HtmlElements.md). Clicks versus the world are in [Click-through](ClickThrough.md). Keyboard and gamepad are in [Input](Input.md). For the same widget in the level, see [World-space UI](WorldSpace.md).

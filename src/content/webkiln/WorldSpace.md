@@ -12,7 +12,7 @@ The same [`UWebkilnWidget`](HUD.md) can sit on a surface in the level - terminal
 
 ## Pin HTML to an actor
 
-The FPS demo puts health numbers on NPCs with **Bind Anchor to Component**. That's one [atlas](HtmlElements.md#screen-and-world-anchors) view, following a capsule each tick. The graph below does this.
+The FPS demo puts health numbers on NPCs with **Bind Anchor to Component**. That's one [atlas](HtmlElements.md#screen-and-world-anchors) view, following a capsule each tick. The graph below does this. Nearest-enemy cards on the HUD use [Unreal textures](Textures.md) instead.
 
 ```blueprint
 bind-anchor
