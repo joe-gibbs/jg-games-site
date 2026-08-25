@@ -26,6 +26,6 @@ If you need a trace that follows the visible shape before the widget is even hit
 
 ## Keyboard and IME
 
-The widget needs focus through the `WidgetInteractionComponent` before [keyboard input or IME](Input.md#keyboard) can reach the page. Composition is cancelled if the widget loses focus or you switch views.
+The widget needs focus through the `WidgetInteractionComponent` before [keyboard input or IME](Input.md#keyboard) can reach the page. **Set Browser Focus** on the view can give or take that focus.
 
 Pointer pass-through is in [Click-through](ClickThrough.md). Gamepad is in [Input](Input.md#gamepad).

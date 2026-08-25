@@ -1,14 +1,14 @@
 # Overview
 
-Webkiln lets you build Unreal UI with HTML, CSS and JavaScript. Chromium draws the page off-screen, and a Slate or UMG widget puts that texture in the game.
+Webkiln lets you build Unreal UI with HTML, CSS and JavaScript. 
 
 You can use it for [HUDs](HUD.md), menus and [screens that sit in the world](WorldSpace.md). The page can [show live Unreal textures](Textures.md), [call Blueprint and C++](TalkToTheGame.md), and Unreal can send data back the other way.
 
-Put your HTML in a folder in the project - Webkiln serves it at a `gameui://` URL. [Getting started](QuickStart.md) covers that setup.
+Webkiln serves content at a `gameui://` URL. See [Getting Started](QuickStart.md) for setup.
 
 ## Platforms
 
-Unreal Engine 5.1 through 5.8 on Windows 64-bit, Direct3D 11 or Direct3D 12, including Wine and Proton. Install the Webkiln package that matches your project's Unreal Engine minor version. Full details are in [Compatibility](Compatibility.md).
+Webkiln supports Unreal Engine 4.25 through 5.8 on Windows 64-bit. Full details are in [Compatibility](Compatibility.md).
 
 ## The main pieces
 

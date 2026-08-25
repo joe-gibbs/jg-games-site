@@ -55,7 +55,8 @@ through Unreal's **Additional Non-Asset Directories to Package** list. That's co
 ## Bridge
 
 **Bridge Actions**: Blueprint subclasses of `UWebkilnBridgeAction`. One instance per
-class per game instance. Changes apply on the next game instance.
+class per game instance. Changes apply on the next game instance. Unmatched actions
+go to **On Bridge Request** on the subsystem - see [JavaScript bridge](Bridge.md#catch-all-requests).
 
 **Bridge Events**: name and optional payload struct for events pushed from Unreal.
 **Export Bridge TypeScript** reads this list. That's covered in [JavaScript bridge](Bridge.md#generated-typescript).

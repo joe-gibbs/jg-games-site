@@ -29,7 +29,7 @@ The widget also has a **Texture Sources** map you can fill in the editor.
 HudView->SetTextureSource(FName(TEXT("portrait.0")), SceneCapture->TextureTarget);
 ```
 
-The same node exists in Blueprint. Switching views on a widget clears texture bindings that widget applied to the previous view.
+The same node exists in Blueprint. Switching views clears those bindings - see [Views](Views.md#attach-the-view).
 
 ## Native or DOM
 
@@ -42,7 +42,7 @@ The same node exists in Blueprint. Switching views on a widget clears texture bi
 <webkiln-texture mode="native" source="scene.preview" native-layer="below"></webkiln-texture>
 ```
 
-Pointer input on a native texture is ordinary [DOM input](Input.md). Native pixels are not sampled for [hit testing](HitTesting.md). If the texture itself needs to be part of the hit, use `mode="dom"`.
+Pointer input on a native texture is ordinary [DOM input](Input.md). Native mode and hit testing are in [Hit testing](HitTesting.md).
 
 Native composition is tied to the view that owns the element. Do not put `webkiln-texture` in an [anchor atlas](HtmlElements.md#screen-and-world-anchors) page if you want live Unreal pixels - the atlas paint will not include them.
 

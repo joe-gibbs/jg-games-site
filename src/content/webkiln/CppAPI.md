@@ -11,7 +11,7 @@ UWebkilnSubsystem* Webkiln = GameInstance->GetSubsystem<UWebkilnSubsystem>();
 | `CreateView`, `CreateViewAsync` | Create a [view](Views.md#create-a-view) and start page loading. |
 | `FindView` | Look up a view by ID. `HasView` is the same check, C++ only. |
 | `DestroyView` | Close a view. |
-| `SetBridgeRequestHandler` | C++ JavaScript-request handler. See [JavaScript bridge](Bridge.md#c-handlers). |
+| `SetBridgeRequestHandler` | C++ JavaScript-request handler. Blueprint's catch-all is **On Bridge Request**. See [JavaScript bridge](Bridge.md#catch-all-requests). |
 | `DispatchEngineEventToView` | Event to one named view. |
 | `BroadcastEngineEvent` | Event to every owned view. |
 | `RegisterResourceMount`, `UnregisterResourceMount` | Add or remove a `gameui://` host at runtime. List the same folder under **[Trusted Local Mounts](Settings.md#resources)** to [package](Packaging.md) it. |
@@ -23,13 +23,14 @@ UWebkilnSubsystem* Webkiln = GameInstance->GetSubsystem<UWebkilnSubsystem>();
 
 `UWebkilnView` owns the browser, the texture and the captured audio. `GetTexture()` is what
 UMG and Slate present. `GetLastError()` is C++ only - Blueprint uses **On Load Failed**.
+`SetBrowserFocus` gives or takes keyboard focus. See [Input](Input.md#keyboard).
 
 [`UWebkilnWidget::SetView()`](Views.md#attach-the-view) attaches a view. The subsystem owns the view.
 The widget can hold [texture sources](Textures.md), an [anchor-atlas](HtmlElements.md#screen-and-world-anchors) view and a [localisation](HtmlElements.md#unreal-localisation) String Table.
 `SWebkilnWidget` is public for Slate.
 
 `RegisterResourceMount` needs a directory that exists and a valid host. Relative paths are
-from the project directory. Put the same folder under **[Trusted Local Mounts](Settings.md#resources)** if you want it [packaged](Packaging.md).
+from the project directory.
 
 JSON conversion uses `FJsonObjectConverter`. Blueprint bridge classes are in
 [Talk to the game](TalkToTheGame.md) and [JavaScript bridge](Bridge.md). Counters are in [Diagnostics](Diagnostics.md).

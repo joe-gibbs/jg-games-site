@@ -2,28 +2,11 @@
 
 There's a walkthrough in [Talk to the game](TalkToTheGame.md).
 
-On a `gameui://` page you get `window.gameUI`. `gameUI` is the same object.
-
-```typescript
-interface WebkilnBridgeApi {
-  request(action: string, payload?: unknown): Promise<unknown>;
-  on(name: string, callback: (...args: unknown[]) => void): () => void;
-  markReady(): Promise<void>;
-}
-```
-
-Wait for `webkiln:runtime-ready`, then call `markReady()`. That's when **On Ready** fires. Unreal holds pushed events until then. After a [reload](Views.md#status-and-delegates), call it again.
+On a `gameui://` page you get `window.gameUI`. `gameUI` is the same object. The TypeScript shape, `request`, events and `markReady` are in that walkthrough.
 
 ## Requests from JavaScript
 
-```javascript
-const result = await gameUI.request('inventory.inspect', {
-  itemId: 42,
-  includeHistory: false,
-});
-```
-
-If you leave the payload off, it's sent as JSON `null`. Requests can finish in any order.
+`gameUI.request(action, payload?)` returns a Promise. If you leave the payload off, it's sent as JSON `null`. Requests can finish in any order.
 If the native side returned a fixed error code, it's on `error.code`.
 
 | Error code | Cause |
@@ -65,15 +48,17 @@ If JavaScript sent an array, a scalar or null, **Payload Json** still has that v
 Only the first completion counts. A Blueprint action runs before
 the C++ handler and the subsystem's **On Bridge Request** delegate.
 
+## Catch-all requests
+
+If no Bridge Action matches, Unreal tries the C++ handler, then **On Bridge Request**
+on the game-instance subsystem. Bind that when you don't want a class per action.
+Complete the same **Request** with **Succeed**, **Succeed Object** or **Fail**.
+**Originating View** is the view that called `gameUI.request`. If nothing is bound,
+JavaScript gets `unknown_action`.
+
 ## Pushed events from Unreal
 
-```javascript
-const unsubscribe = gameUI.on('player.updated', player => {
-  health.textContent = String(player.health);
-});
-
-unsubscribe();
-```
+[Talk to the game](TalkToTheGame.md#events-from-unreal) has the `gameUI.on` snippet and the dispatch graphs.
 
 | Node | Payload |
 |---|---|
@@ -82,39 +67,16 @@ unsubscribe();
 | Dispatch Webkiln Event (JSON Object) | A Webkiln JSON object that you populate. |
 | Dispatch Webkiln Event (JSON String) | Any JSON value that is already encoded. |
 
-The graphs below dispatch an Unreal object and a struct.
-
-```blueprint
-dispatch-object
-dispatch-struct
-```
-
 ## Unreal object serialisation
 
 **Stringify Unreal Object** returns the JSON string.
 **Dispatch Webkiln Event (Unreal Object)** does the same conversion and sends it.
 
-```cpp
-UPROPERTY(BlueprintReadWrite)
-FString DisplayName = TEXT("Marcus");
-
-UPROPERTY(BlueprintReadWrite)
-int32 Health = 84;
-```
-
-```json
-{"displayName":"Marcus","health":84}
-```
-
 Unreal's JSON field names lowercase the first character of the property name.
 Owned instanced subobjects are inlined; other UObject pointers become Unreal reference strings.
 
 To return an existing UObject from a bridge request, feed **Stringify Unreal Object**
-into **Succeed**. The graph below does this.
-
-```blueprint
-stringify-succeed
-```
+into **Succeed**. [Talk to the game](TalkToTheGame.md#return-an-unreal-object) has the graph.
 
 ## Generated TypeScript
 

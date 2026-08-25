@@ -20,7 +20,7 @@ window.webkiln.input.configure({
 
 ## Keyboard
 
-Clicking something the browser handles focuses the widget in Slate and CEF. When Slate focus leaves, browser focus leaves with it.
+Clicking something the browser handles focuses the widget in Slate and CEF. When Slate focus leaves, browser focus leaves with it. **Set Browser Focus** on the view does the same thing from Blueprint or C++.
 
 The Unreal console keys still open the console.
 
