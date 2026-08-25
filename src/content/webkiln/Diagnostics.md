@@ -15,8 +15,11 @@ After Play, open the Unreal console (`~`) and run:
 Webkiln.OpenDevTools
 ```
 
-That opens Chromium DevTools for the only live view. If more than one is live, pass the
-[view id](Views.md#init-params):
+That opens a **Webkiln Inspector** window: in-process Chromium DevTools (Elements, Console,
+Sources, Network) attached to the live page. It is not the system browser.
+
+If only one [view](Views.md#init-params) is live, that view is used. If more than one is live
+and you omit the id, every view gets an inspector. Pass an id to open one:
 
 ```text
 Webkiln.OpenDevTools MainUI
@@ -24,11 +27,23 @@ Webkiln.OpenDevTools MainUI
 
 **Open DevTools** on the view does the same thing. From C++, `View->OpenDevTools()`.
 
-Remote debugging is at `http://localhost:9222` unless you change [Remote Debugging Port](Settings.md#development).
-The address is also written to the Unreal log.
+The inspector opens in front of the game and follows the display scale. Close the window
+when you are done.
 
-**Enable DevTools** must be on (the default). A settings change needs a process restart.
+### Bridge calls in Network
+
+Each `gameUI.request` is also logged as a Fetch to
+`gameui://app/__webkiln/bridge/<action>`. In the inspector, open **Network** and filter to
+**Fetch/XHR** to see action names, payloads and responses instead of page assets.
+
+### Settings
+
+**Enable DevTools** must be on (the default). [Remote Debugging Port](Settings.md#development)
+must be greater than `0` (default `9222`). A settings change needs a process restart.
 The view has to have started. Shipping builds do not register the console command.
+
+Remote debugging is also at `http://localhost:9222` unless you change the port.
+The address is written to the Unreal log. It only listens on the local machine.
 
 ## DOM automation
 
