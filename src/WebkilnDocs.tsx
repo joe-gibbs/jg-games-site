@@ -323,7 +323,10 @@ function WebkilnDocs() {
                 <strong>Webkiln</strong>
                 <span>Documentation</span>
               </div>
-              <a href="mailto:contact@jggames.dev">contact@jggames.dev</a>
+              <nav aria-label="Support">
+                <a href="https://discord.gg/HZkcDwkdBU" target="_blank" rel="noopener noreferrer">Discord</a>
+                <a href="mailto:contact@jggames.dev">contact@jggames.dev</a>
+              </nav>
             </footer>
           </article>
         </main>

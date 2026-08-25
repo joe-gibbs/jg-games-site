@@ -72,7 +72,7 @@ Widget->SetView(View);
 Widget->AddToViewport();
 ```
 
-If you're using C++, add `Webkiln` to `PrivateDependencyModuleNames` in your's `Build.cs`. For more about the API see [C++ API](CppAPI.md).
+If you're using C++, add `Webkiln` to `PrivateDependencyModuleNames` in your module's `Build.cs`. For more about the API see [C++ API](CppAPI.md).
 
 Bind **On Document Ready**, **On Ready** and **On Load Failed** before you use the page. Those delegates are listed in [Views](Views.md#status-and-delegates).
 

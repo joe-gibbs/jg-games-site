@@ -18,6 +18,8 @@ Webkiln.OpenDevTools
 That opens a **Webkiln Inspector** window: in-process Chromium DevTools (Elements, Console,
 Sources, Network) attached to the live page. It is not the system browser.
 
+![Webkiln Inspector inspecting the HUD](/webkiln/docs/webkiln-inspector.png)
+
 If only one [view](Views.md#init-params) is live, that view is used. If more than one is live
 and you omit the id, every view gets an inspector. Pass an id to open one:
 

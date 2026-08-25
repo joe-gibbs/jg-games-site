@@ -81,6 +81,7 @@ const WebkilnDownloads = () => {
         <span>Copyright JG Games 2026</span>
         <nav aria-label="Footer navigation">
           <a href="/webkiln/docs/">Documentation</a>
+          <a href="https://discord.gg/HZkcDwkdBU" target="_blank" rel="noopener noreferrer">Discord</a>
           <a href="mailto:contact@jggames.dev">Contact</a>
           <a href="/">JG Games</a>
         </nav>
