@@ -214,7 +214,7 @@ export const DocsSearch = ({
         <span className="docs-search-label">Search</span>
         <input
           ref={inputRef}
-          type="search"
+          type="text"
           value={query}
           placeholder="Search the docs"
           autoComplete="off"

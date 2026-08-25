@@ -147,6 +147,13 @@ html::-webkit-scrollbar-corner,
   background: var(--docs-panel);
   color: var(--docs-ink);
   font-size: 0.86rem;
+  appearance: none;
+}
+.docs-search-field input::-webkit-search-decoration,
+.docs-search-field input::-webkit-search-cancel-button,
+.docs-search-field input::-webkit-search-results-button,
+.docs-search-field input::-webkit-search-results-decoration {
+  display: none;
 }
 .docs-search-field input::placeholder { color: var(--docs-faint); }
 .docs-search-field input:focus {
