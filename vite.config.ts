@@ -11,6 +11,7 @@ export default defineConfig({
         main: resolve(__dirname, "index.html"),
         webkiln: resolve(__dirname, "webkiln/index.html"),
         webkilnDocs: resolve(__dirname, "webkiln/docs/index.html"),
+        webkilnDownloads: resolve(__dirname, "webkiln/downloads/index.html"),
       },
     },
   },

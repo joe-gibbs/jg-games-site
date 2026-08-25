@@ -9,3 +9,5 @@ If you only added a folder with [`RegisterResourceMount`](CppAPI.md) at runtime,
 Engine versions are in [Compatibility](Compatibility.md).
 
 Watermarked evaluation builds draw the Webkiln logo in the bottom-right of every view. Licensed copies from Fab don't. `IsWatermarked` tells you which edition you compiled - it's on the [C++ API](CppAPI.md). If you see the logo and didn't expect it, see [Troubleshooting](Troubleshooting.md).
+
+Watermarked trial zips, including the FPS sample that ships them, do not support **File > Package Project**. Unreal has to compile the game target against Webkiln, and those zips omit plugin source so the watermark stays in the editor DLL. That fails with `Could not find definition for module 'Webkiln'`. Package from a licensed Fab build, or download the [packaged demo](/webkiln/downloads/).

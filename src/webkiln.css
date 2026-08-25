@@ -37,7 +37,8 @@
 }
 
 .wk-site-header nav a:hover,
-.wk-footer nav a:hover {
+.wk-footer nav a:hover,
+.wk-site-header nav a[aria-current="page"] {
   color: var(--orange-light);
 }
 
@@ -171,6 +172,102 @@
   font-weight: 300;
 }
 
+.wk-downloads {
+  width: min(1180px, calc(100% - 4rem));
+  margin: 0 auto;
+  padding: clamp(7rem, 13vw, 11rem) 0;
+}
+
+.wk-downloads > header {
+  max-width: 760px;
+}
+
+.wk-downloads h1 {
+  margin-top: 0;
+  font-size: clamp(2.6rem, 5.5vw, 5rem);
+}
+
+.wk-downloads > header p {
+  max-width: 62ch;
+  margin-top: 1.25rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+}
+
+.wk-download-packaged {
+  display: grid;
+  align-items: center;
+  margin-top: clamp(3.5rem, 6vw, 5.5rem);
+  padding: 1.6rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  gap: clamp(1rem, 3vw, 3rem);
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.wk-download-packaged h2 {
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+}
+
+.wk-download-packaged p {
+  max-width: 48ch;
+  margin-top: 0.45rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+}
+
+.wk-download-list {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  border-top: 1px solid var(--line);
+}
+
+.wk-download-list article {
+  display: grid;
+  align-items: center;
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--line);
+  gap: clamp(1rem, 3vw, 3rem);
+  grid-template-columns: minmax(180px, 0.4fr) minmax(0, 1fr);
+}
+
+.wk-download-list h2 {
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
+.wk-download-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem 1.25rem;
+}
+
+.wk-download-link,
+.wk-download-pending {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--line);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.wk-download-link {
+  color: var(--ink);
+}
+
+.wk-download-link:hover {
+  border-color: var(--orange);
+  color: var(--orange-light);
+}
+
+.wk-download-pending {
+  color: var(--ink-faint);
+}
+
 .wk-statement {
   padding: clamp(6rem, 11vw, 9rem) max(2rem, calc((100vw - 1180px) / 2));
   border-top: 1px solid var(--line);
@@ -193,12 +290,18 @@
 
 .wk-footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem 2rem;
   padding: 2rem max(2rem, calc((100vw - 1180px) / 2));
   border-top: 1px solid var(--line);
   color: var(--ink-faint);
   font-size: 0.75rem;
+}
+
+.wk-footer nav {
+  flex-wrap: wrap;
 }
 
 @media (max-width: 900px) {
@@ -230,10 +333,20 @@
 }
 
 @media (max-width: 800px) {
-  .wk-capability-index article {
+  .wk-capability-index article,
+  .wk-download-list article {
     grid-template-columns: 1fr;
     gap: 0.45rem;
     padding: 1.35rem 0;
+  }
+
+  .wk-download-actions,
+  .wk-download-packaged {
+    justify-content: flex-start;
+  }
+
+  .wk-download-packaged {
+    grid-template-columns: 1fr;
   }
 
   .wk-hero-fps .live-example {
@@ -257,7 +370,8 @@
   }
 
   .wk-hero,
-  .wk-capabilities {
+  .wk-capabilities,
+  .wk-downloads {
     width: min(100% - 2.5rem, 1180px);
   }
 

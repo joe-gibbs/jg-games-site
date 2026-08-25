@@ -37,8 +37,8 @@ const WebkilnMarketing = () => {
           <span>Webkiln</span>
         </a>
         <nav aria-label="Webkiln navigation">
-          <a href="#capabilities">Capabilities</a>
           <a href="#webkiln-examples">Examples</a>
+          <a href="/webkiln/downloads/">Downloads</a>
           <a href="/webkiln/docs/">Documentation</a>
           <a href="/">JG Games</a>
         </nav>

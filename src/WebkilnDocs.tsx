@@ -277,6 +277,7 @@ function WebkilnDocs() {
           <span>Webkiln</span>
         </a>
         <nav aria-label="Documentation links">
+          <a href="/webkiln/downloads/">Downloads</a>
           <a href="/">JG Games</a>
           <a href="mailto:contact@jggames.dev">Support</a>
         </nav>
