@@ -605,7 +605,7 @@ html::-webkit-scrollbar-corner,
   background-size: 64px 64px, 64px 64px, 16px 16px, 16px 16px;
   box-shadow: inset 0 1px 24px rgba(4, 8, 12, 0.46);
 }
-.bp-wires { position: absolute; inset: 0; overflow: visible; }
+.bp-wires { position: absolute; inset: 0; z-index: 0; overflow: visible; pointer-events: none; }
 .bp-wires path {
   fill: none;
   stroke-linecap: round;
@@ -620,7 +620,8 @@ html::-webkit-scrollbar-corner,
 .bp-node {
   --node-accent: #2f79ae;
   position: absolute;
-  overflow: hidden;
+  z-index: 1;
+  overflow: visible;
   border: 1px solid #050709;
   border-radius: 3px;
   background: rgba(25, 28, 32, 0.98);

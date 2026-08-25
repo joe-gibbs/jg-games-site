@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
 export type BlueprintPinType =
@@ -47,6 +47,7 @@ export type BlueprintGraphData = {
 
 const defaultNodeWidth = 250;
 const headerHeight = 50;
+const bodyPaddingTop = 5;
 const pinHeight = 30;
 const nodePadding = 12;
 
@@ -140,22 +141,29 @@ const BlueprintPinText = ({
 
 const BlueprintPinGlyph = ({
   connected,
+  pinKey: key,
   side,
   type,
 }: {
   connected: boolean;
+  pinKey: string;
   side: "input" | "output";
   type: BlueprintPinType;
 }) => (
   <span
     className={`bp-pin-glyph${type === "exec" ? " is-exec" : ""}${connected ? " is-connected" : ""} is-${side}`}
+    data-pin-key={key}
+    data-pin-side={side}
     style={{ "--pin-colour": pinColours[type] } as CSSProperties}
     aria-hidden="true"
   />
 );
 
+type PinPoint = { x: number; y: number; type: BlueprintPinType };
+
 export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
   const viewportRef = useRef<HTMLDivElement>(null);
+  const surfaceRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{
     pointerId: number;
     startX: number;
@@ -172,6 +180,7 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
   const [copied, setCopied] = useState(false);
+  const [pinLayout, setPinLayout] = useState<Record<string, { x: number; y: number }>>({});
   const hideTooltipTimer = useRef(0);
 
   const copyNodes = async () => {
@@ -249,6 +258,48 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
     observer.observe(viewport);
     return () => observer.disconnect();
   }, []);
+
+  useLayoutEffect(() => {
+    const surface = surfaceRef.current;
+    if (!surface) return undefined;
+
+    const measure = () => {
+      const origin = surface.getBoundingClientRect();
+      const scale = zoomRef.current || 1;
+      if (origin.width === 0) return;
+      const next: Record<string, { x: number; y: number }> = {};
+      surface.querySelectorAll<HTMLElement>("[data-pin-key]").forEach((element) => {
+        const key = element.dataset.pinKey;
+        if (!key) return;
+        const bounds = element.getBoundingClientRect();
+        const exec = element.classList.contains("is-exec");
+        const side = element.dataset.pinSide;
+        const x = exec
+          ? (side === "output" ? bounds.right : bounds.left) - origin.left
+          : bounds.left + bounds.width / 2 - origin.left;
+        next[key] = {
+          x: x / scale,
+          y: (bounds.top + bounds.height / 2 - origin.top) / scale,
+        };
+      });
+      setPinLayout((current) => {
+        const keys = Object.keys(next);
+        if (
+          keys.length === Object.keys(current).length
+          && keys.every((key) => current[key] && Math.abs(current[key].x - next[key].x) < 0.5 && Math.abs(current[key].y - next[key].y) < 0.5)
+        ) {
+          return current;
+        }
+        return next;
+      });
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(surface);
+    surface.querySelectorAll(".bp-node").forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, [graph, zoom]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -336,15 +387,18 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
     return pins;
   }, [graph.connections]);
 
-  const pinPoint = (nodeId: string, pinId: string, side: "input" | "output") => {
+  const pinPoint = (nodeId: string, pinId: string, side: "input" | "output"): PinPoint | null => {
     const node = nodeById.get(nodeId);
     if (!node) return null;
     const pins = side === "input" ? node.inputs ?? [] : node.outputs ?? [];
     const index = pins.findIndex((pin) => pin.id === pinId);
     if (index < 0) return null;
+    const measured = pinLayout[pinKey(nodeId, pinId)];
+    const width = node.width ?? defaultNodeWidth;
+    const inset = pins[index].type === "exec" ? 14 : 13;
     return {
-      x: node.x + (side === "output" ? node.width ?? defaultNodeWidth : 0),
-      y: node.y + headerHeight + index * pinHeight + pinHeight / 2,
+      x: measured?.x ?? node.x + (side === "output" ? width - inset : inset),
+      y: measured?.y ?? node.y + headerHeight + bodyPaddingTop + index * pinHeight + pinHeight / 2,
       type: pins[index].type,
     };
   };
@@ -448,6 +502,7 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
         >
           <div
             className="bp-surface"
+            ref={surfaceRef}
             style={{
               width: dimensions.width,
               height: dimensions.height,
@@ -521,6 +576,7 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
                     >
                       <BlueprintPinGlyph
                         connected={connectedPins.has(pinKey(node.id, pin.id))}
+                        pinKey={pinKey(node.id, pin.id)}
                         side="input"
                         type={pin.type}
                       />
@@ -593,6 +649,7 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
                       )}
                       <BlueprintPinGlyph
                         connected={connectedPins.has(pinKey(node.id, pin.id))}
+                        pinKey={pinKey(node.id, pin.id)}
                         side="output"
                         type={pin.type}
                       />
