@@ -423,8 +423,7 @@ html::-webkit-scrollbar-corner,
 .docs-code .hljs-link { color: #ff7a3d; }
 .docs-code .hljs-string,
 .docs-code .hljs-template-tag,
-.docs-code .hljs-template-variable,
-.docs-code .hljs-addition { color: #e8b85c; }
+.docs-code .hljs-template-variable { color: #e8b85c; }
 .docs-code .hljs-title,
 .docs-code .hljs-title.class_,
 .docs-code .hljs-title.function_,
@@ -448,7 +447,20 @@ html::-webkit-scrollbar-corner,
 .docs-code .hljs-meta .hljs-keyword { color: #8fce7a; }
 .docs-code .hljs-punctuation,
 .docs-code .hljs-operator { color: #c8c4be; }
-.docs-code .hljs-deletion { color: #e56f6f; }
+.docs-code .hljs-addition {
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+  color: #8fce7a;
+  background: rgba(143, 206, 122, 0.12);
+}
+.docs-code .hljs-deletion {
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+  color: #e56f6f;
+  background: rgba(229, 111, 111, 0.12);
+}
 .docs-code .hljs-emphasis { font-style: italic; }
 .docs-code .hljs-strong { font-weight: 700; }
 
