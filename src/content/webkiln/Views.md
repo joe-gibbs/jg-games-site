@@ -22,14 +22,14 @@ The entry URL gets a `view` query parameter (`?view=MainUI`). Existing query par
 | Entry Point | Page URL, for example `gameui://app/index.html`. |
 | Width, Height | Zero uses the current player viewport dimension. |
 | Render Scale | Multiplier for the backing texture size. |
-| UI Scale Viewport Size | For [atlas](HtmlElements.md#screen-and-world-anchors) / off-screen views. Zero uses the browser size. |
+| UI Scale Viewport Size | For [atlas](WorldSpace.md#pin-html-to-an-actor) / off-screen views. Zero uses the browser size. |
 | Transparent | Alpha background. |
 | Use Default Transparency | Uses the [project setting](Settings.md#runtime) instead of the value above. |
 | Frame Rate | Zero uses the [project default](Settings.md#runtime). |
 | Create Render Target | The texture that Slate and UMG present. |
-| Localisation String Table | String Table asset given to the page. See [HTML elements](HtmlElements.md#unreal-localisation). |
+| Localisation String Table | String Table asset given to the page. See [Localisation](Localisation.md). |
 | Localisation String Table Id | Native String Table, used instead of an asset. |
-| Route Browser Audio to Unreal | Captures Chromium audio into the Unreal mixer. See [HTML elements](HtmlElements.md#browser-audio). |
+| Route Browser Audio to Unreal | Captures Chromium audio into the Unreal mixer. See [Browser audio](Audio.md). |
 | Browser Audio Volume | Initial Unreal-side multiplier. |
 | Browser Audio Is UI Sound | Unreal UI-sound pause and mixing rules. |
 | Browser Audio Sound Class | Mix and pause class. |
@@ -51,7 +51,7 @@ When a `UWebkilnWidget` resizes, the browser viewport and render target follow. 
 
 ## Attach the view
 
-Assign the view with **Set View**. Switching views clears [texture bindings](Textures.md) this widget applied to the previous view, and cancels [IME](Input.md#keyboard) if a composition is in progress. The widget then applies its textures, [anchor atlas](HtmlElements.md#screen-and-world-anchors) and string table to the new view. The previous view keeps whatever atlas it already had. The subsystem still owns both views.
+Assign the view with **Set View**. Switching views clears [texture bindings](Textures.md) this widget applied to the previous view, and cancels [IME](Input.md#keyboard) if a composition is in progress. The widget then applies its textures, [anchor atlas](WorldSpace.md#pin-html-to-an-actor) and string table to the new view. The previous view keeps whatever atlas it already had. The subsystem still owns both views.
 
 Taking the widget off doesn't close the view. See [Close a view](#close-a-view).
 
@@ -68,7 +68,7 @@ The two ready steps are in [Talk to the game](TalkToTheGame.md#when-is-the-page-
 | On Closed | Browser and native resources have closed. |
 | On Input State Changed | World-input block flag and DOM cursor kind. See [Click-through](ClickThrough.md) and [Input](Input.md). |
 
-**Reload** sends [texture](Textures.md) layout, [anchors](HtmlElements.md#screen-and-world-anchors), [input](Input.md) state and [localisation](HtmlElements.md#unreal-localisation) again once the new document is ready. Call `markReady` again after that - see [Talk to the game](TalkToTheGame.md#when-is-the-page-ready).
+**Reload** sends [texture](Textures.md) layout, [anchors](WorldSpace.md#pin-html-to-an-actor), [input](Input.md) state and [localisation](Localisation.md) again once the new document is ready. Call `markReady` again after that - see [Talk to the game](TalkToTheGame.md#when-is-the-page-ready).
 
 ## Close a view
 

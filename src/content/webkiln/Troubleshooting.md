@@ -1,7 +1,5 @@
 # Troubleshooting
 
-Open **Tools > Webkiln Diagnostics**. That's covered in [Diagnostics](Diagnostics.md). View failures also come through **On Load Failed**, and from C++ through `ExportRuntimeDiagnosticsJson()`.
-
 - **WebBrowser is still loaded:** Choose **Yes** on the startup dialog and restart. That dialog also covers **Web Browser Widget**. See [Compatibility](Compatibility.md).
 
 ![Dialog asking to disable Unreal's Web Browser plugin](/webkiln/docs/webbrowser-conflict.png)

@@ -2,8 +2,6 @@
 
 There's a walkthrough in [Talk to the game](TalkToTheGame.md).
 
-On a `gameui://` page you get `window.gameUI`. `gameUI` is the same object. The TypeScript shape, `request`, events and `markReady` are in that walkthrough.
-
 ## Requests from JavaScript
 
 `gameUI.request(action, payload?)` returns a Promise. If you leave the payload off, it's sent as JSON `null`. Requests can finish in any order.
@@ -22,7 +20,7 @@ If the native side returned a fixed error code, it's on `error.code`.
 ## Blueprint actions
 
 A Blueprint subclass of `Webkiln Bridge Action`, listed under **[Bridge Actions](Settings.md#bridge)**, handles
-`gameUI.request` for its **Action Name**. You implement **Execute**.
+`gameUI.request` for its **Action Name**. You need to implement **Execute** and add the subclass to the plugin settings.
 
 `Execute` gets:
 
@@ -52,8 +50,7 @@ the C++ handler and the subsystem's **On Bridge Request** delegate.
 
 If no Bridge Action matches, Unreal tries the C++ handler, then **On Bridge Request**
 on the game-instance subsystem. Bind that when you don't want a class per action.
-Complete the same **Request** with **Succeed**, **Succeed Object** or **Fail**.
-**Originating View** is the view that called `gameUI.request`. If nothing is bound,
+Complete the same **Request** with **Succeed**, **Succeed Object** or **Fail**. If nothing is bound,
 JavaScript gets `unknown_action`.
 
 ## Pushed events from Unreal

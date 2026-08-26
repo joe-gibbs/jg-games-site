@@ -4,13 +4,11 @@ First you need the plugin in your project, an HTML page, and that page on the HU
 
 ## 1. Install the plugin
 
-Copy the packaged `Webkiln` folder into the project's `Plugins` directory (skip this step if you've downloaded through Fab). 
+Copy the packaged `Webkiln` folder into the project's `Plugins` directory. 
 
 Enable **Webkiln** under **Edit > Plugins**, turn off Unreal's **Web Browser** and **Web Browser Widget** plugins, and restart the editor. See [Compatibility](Compatibility.md) for platforms, or [Troubleshooting](Troubleshooting.md) if that dialog keeps coming back.
 
 ![Plugins window with Webkiln enabled](/webkiln/docs/plugins-webkiln.png)
-
-Use the Webkiln build that matches your Unreal Engine version (4.25 through 5.8).
 
 ## 2. Add an HTML page
 
@@ -44,19 +42,29 @@ Then under **Project Settings > Plugins > Webkiln > Trusted Local Mounts**, add 
 
 You can now load the page as `gameui://app/index.html`. Restart the editor if you change this list.
 
-If you're using a bundler, point host `app` at the output folder instead (`WebUI/dist`). Save, then **restart** the game - `gameui://` will read that folder from disk. **Tools > Open Webkiln Plain Sample** opens the packaged sample; there's a React one under `Resources/Samples/React`.
+If you're using a bundler, point host `app` at the output folder. Save, then **restart** the game, `gameui://` will read that folder from disk. 
 
-## 3. Create a HUD
+## 3. Create a widget
 
-Create a [view](Views.md) from the game-instance subsystem, put it on a `UWebkilnWidget`, and add that widget to the viewport. Set the width and height `0` so that the view will be sized to fit the game window.
+Create a Widget Blueprint. `PlayerHUD` is the name used in the graph below (this is unimportant); the parent class can stay `User Widget`.
 
-The graph below does this in Blueprint.
+In the Designer, search the palette for **Webkiln Widget** and drop it in. Tick **Is Variable** so you can bind it from Blueprint.
+
+![UMG designer with a Webkiln Widget filling PlayerHUD](/webkiln/docs/hud-umg.png)
+
+You can also put `UWebkilnWidget` on the viewport by itself. There's more on the widget in [HUD](HUD.md).
+
+## 4. Wire it up
+
+Create a [view](Views.md) from the game-instance subsystem, set it on the widget, and add that widget to the viewport. Set the width and height `0` so that the view will be sized to fit the game window.
+
+The graph below does this in Blueprint: it creates `PlayerHUD`, adds it to the viewport, then **Set View** on the Webkiln widget inside it.
 
 ```blueprint
 create-view
 ```
 
-Or in C++:
+Or in C++, you can skip the wrapping widget and put `UWebkilnWidget` on the viewport directly:
 
 ```cpp
 UWebkilnSubsystem* Webkiln = GetGameInstance()->GetSubsystem<UWebkilnSubsystem>();
@@ -74,12 +82,10 @@ Widget->AddToViewport();
 
 If you're using C++, add `Webkiln` to `PrivateDependencyModuleNames` in your module's `Build.cs`. For more about the API see [C++ API](CppAPI.md).
 
-Bind **On Document Ready**, **On Ready** and **On Load Failed** before you use the page. Those delegates are listed in [Views](Views.md#status-and-delegates).
+When using the async initialisation bind **On Document Ready**, **On Ready** and **On Load Failed** before you use the page so that you can see what has gone wrong. Those delegates are listed in [Views](Views.md#status-and-delegates).
 
 Hit Play and the page should show up over the game.
 
 ![HUD drawn over the game](/webkiln/docs/hud-play.jpg)
 
 In the editor you can inspect it with **Open DevTools** on the view, or with Chromium remote debugging - the port is under [Project settings](Settings.md#development) (default `9222`).
-
-There's more on the widget itself in [HUD](HUD.md).

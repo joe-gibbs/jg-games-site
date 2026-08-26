@@ -6,6 +6,7 @@ import hljs from "highlight.js/lib/core";
 import bash from "highlight.js/lib/languages/bash";
 import cpp from "highlight.js/lib/languages/cpp";
 import css from "highlight.js/lib/languages/css";
+import diff from "highlight.js/lib/languages/diff";
 import javascript from "highlight.js/lib/languages/javascript";
 import json from "highlight.js/lib/languages/json";
 import powershell from "highlight.js/lib/languages/powershell";
@@ -18,6 +19,7 @@ import { LanguageIcon } from "./components/LanguageIcon";
 hljs.registerLanguage("bash", bash);
 hljs.registerLanguage("cpp", cpp);
 hljs.registerLanguage("css", css);
+hljs.registerLanguage("diff", diff);
 hljs.registerLanguage("javascript", javascript);
 hljs.registerLanguage("json", json);
 hljs.registerLanguage("powershell", powershell);
@@ -53,7 +55,8 @@ const documentOrder = [
   "Input.md",
   "ClickThrough.md",
   "HitTesting.md",
-  "HtmlElements.md",
+  "Localisation.md",
+  "Audio.md",
   "Views.md",
   "Bridge.md",
   "Settings.md",
@@ -72,7 +75,7 @@ const navigationGroups = [
   },
   {
     label: "Build UI",
-    files: ["HUD.md", "WorldSpace.md", "Textures.md", "Input.md", "ClickThrough.md", "HitTesting.md", "HtmlElements.md"],
+    files: ["HUD.md", "WorldSpace.md", "Textures.md", "Input.md", "ClickThrough.md", "HitTesting.md", "Localisation.md", "Audio.md"],
   },
   {
     label: "Reference",
@@ -87,7 +90,10 @@ const navigationGroups = [
 const slugAliases: Record<string, string> = {
   readme: "overview",
   lifecycle: "views",
-  api: "html-elements",
+  api: "localisation",
+  "html-elements": "localisation",
+  "unreal-localisation": "localisation",
+  "browser-audio": "audio",
   "getting-started": "quick-start",
   "pointer-vs-world": "click-through",
   "world-input": "click-through",
@@ -134,6 +140,7 @@ const languageNames: Record<string, string> = {
   cpp: "C++",
   c: "C",
   css: "CSS",
+  diff: "Diff",
   html: "HTML",
   javascript: "JavaScript",
   js: "JavaScript",

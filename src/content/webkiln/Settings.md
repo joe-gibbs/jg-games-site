@@ -1,6 +1,6 @@
 # Project settings
 
-**Project Settings > Plugins > Webkiln**. These live in the project's Engine config.
+**Project Settings > Plugins > Webkiln**. These live in the project's config.
 
 ![Webkiln project settings](/webkiln/docs/settings.png)
 

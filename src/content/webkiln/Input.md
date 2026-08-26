@@ -1,10 +1,8 @@
 # Input
 
-Pointer, keys and gamepad go to the page through the [widget](HUD.md)'s Slate geometry - the browser viewport is the same size as that.
+Pointer, keys and gamepad go to the page through the [widget](HUD.md)'s Slate geometry.
 
-If a full-screen wrapper is eating clicks that should go to the game, that's [Click-through](ClickThrough.md). If a painted control should only be clickable where you can see it, that's [Hit testing](HitTesting.md).
-
-You can map CSS selectors to cursor kinds (`pointer`, `text`, `grab`, `grabbing`, `blocked`, `crosshair`, `help`):
+You can map CSS selectors to various cursor kinds (`pointer`, `text`, `grab`, `grabbing`, `blocked`, `crosshair`, `help`):
 
 ```javascript
 window.webkiln.input.configure({
@@ -16,13 +14,11 @@ window.webkiln.input.configure({
 });
 ```
 
-**On Input State Changed** tells you whether the world is blocked and which cursor the DOM wants. That's on the [view](Views.md#status-and-delegates).
+**On Input State Changed** tells you whether the world is blocked and which cursor the DOM wants.
 
 ## Keyboard
 
 Clicking something the browser handles focuses the widget in Slate and CEF. When Slate focus leaves, browser focus leaves with it. **Set Browser Focus** on the view does the same thing from Blueprint or C++.
-
-The Unreal console keys still open the console.
 
 IME composition is cancelled if the widget loses focus or you switch views.
 

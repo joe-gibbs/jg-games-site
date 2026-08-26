@@ -12,11 +12,28 @@ The same [`UWebkilnWidget`](HUD.md) can sit on a surface in the level - terminal
 
 ## Pin HTML to an actor
 
-The FPS demo puts health numbers on NPCs with **Bind Anchor to Component**. That's one [atlas](HtmlElements.md#screen-and-world-anchors) view, following a capsule each tick. The graph below does this. Nearest-enemy cards on the HUD use [Unreal textures](Textures.md) instead.
+You will often want to be guaranteed that the position of an element in world-space updates locked to the frame. Since Webkiln is decoupled from the Unreal frame loop it's normally unable to do this - UI updates can be a few frames behind, making it look laggy when an enemy health bar stays where it was on screen while the camera moves around.
+
+To fix this you can use **Bind Anchor to Component**. It uses an atlas view - a second off-screen [view](Views.md#create-a-view) that paints many labels or controls - and follows a capsule each tick.
+
+Create that atlas page, set it as the main view **Anchor Atlas View**, then **Set Anchor Placements** / **Set Anchor Placement** for positions. **Bind Anchor to Component** follows a scene component or socket.
+
+```html
+<webkiln-anchor source="settlement.rome" anchor="50% 100%" interactive>
+  <button data-webkiln-anchor-hit>Rome</button>
+</webkiln-anchor>
+```
 
 ```blueprint
+set-atlas
 bind-anchor
 ```
+
+`anchor` is CSS-like - pixels or percentages - and defaults to the centre of the element. **Layer** is draw order. **Hit Priority** on a placement breaks ties; if you don't set it, the draw layer is used. **Bind Anchor to Component** does not have a Hit Priority pin.
+
+`data-webkiln-anchor-hit` on a descendant shrinks the clickable region; buttons, links and inputs are already clickable. The same setup works with `data-webkiln-anchor="key"` on a normal element.
+
+If your code changes atlas layout, call `window.webkiln.anchors.refresh()` or `window.webkiln.anchors.repack()`.
 
 ## Hits
 
@@ -27,5 +44,3 @@ If you need a trace that follows the visible shape before the widget is even hit
 ## Keyboard and IME
 
 The widget needs focus through the `WidgetInteractionComponent` before [keyboard input or IME](Input.md#keyboard) can reach the page. **Set Browser Focus** on the view can give or take that focus.
-
-Pointer pass-through is in [Click-through](ClickThrough.md). Gamepad is in [Input](Input.md#gamepad).

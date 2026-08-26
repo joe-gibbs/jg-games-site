@@ -26,7 +26,7 @@ UMG and Slate present. `GetLastError()` is C++ only - Blueprint uses **On Load F
 `SetBrowserFocus` gives or takes keyboard focus. See [Input](Input.md#keyboard).
 
 [`UWebkilnWidget::SetView()`](Views.md#attach-the-view) attaches a view. The subsystem owns the view.
-The widget can hold [texture sources](Textures.md), an [anchor-atlas](HtmlElements.md#screen-and-world-anchors) view and a [localisation](HtmlElements.md#unreal-localisation) String Table.
+The widget can hold [texture sources](Textures.md), an [anchor-atlas](WorldSpace.md#pin-html-to-an-actor) view and a [localisation](Localisation.md) String Table.
 `SWebkilnWidget` is public for Slate.
 
 `RegisterResourceMount` needs a directory that exists and a valid host. Relative paths are

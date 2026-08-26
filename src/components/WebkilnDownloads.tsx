@@ -1,7 +1,6 @@
 import {
   webkilnEngineReleases,
   webkilnPackagedDemoUrl,
-  webkilnProductVersion,
 } from "../webkilnDownloads";
 
 function DownloadAction({ href, label }: { href: string; label: string }) {
@@ -41,15 +40,7 @@ const WebkilnDownloads = () => {
           <header>
             <h1>Downloads</h1>
             <p>
-              Download a trial of {webkilnProductVersion} for Windows.
-              The FPS sample project is for Unreal Engine 5.7 and 5.8.
-            </p>
-            <p>
-              Watermarked trial plugins and the FPS sample run in the editor.
-              They cannot be packaged: those zips ship editor binaries only,
-              with no plugin source, so the watermark cannot be stripped.
-              Use a licensed Fab build to package a game, or grab the packaged
-              demo below.
+              Download a trial of Webkiln for Windows.
             </p>
           </header>
 

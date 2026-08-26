@@ -1,12 +1,5 @@
 # Diagnostics
 
-Open **Tools > Webkiln Diagnostics**. The same checks are also on **Validate Installation**,
-**Get Runtime Directory** and **Synchronise Automatic Packaging** - that last one is for [Packaging](Packaging.md).
-
-At runtime you've got **On Load Failed** on the [view](Views.md#status-and-delegates).
-From C++, `GetLastError()` is on that view and `ExportRuntimeDiagnosticsJson()` is on the
-subsystem. CEF logs to `Saved/Webkiln/Logs/cef.log`.
-
 ## DevTools
 
 After Play, open the Unreal console (`~`) and run:
@@ -16,12 +9,12 @@ Webkiln.OpenDevTools
 ```
 
 That opens a **Webkiln Inspector** window: in-process Chromium DevTools (Elements, Console,
-Sources, Network) attached to the live page. It is not the system browser.
+Sources, Network) attached to the live page.
 
 ![Webkiln Inspector inspecting the HUD](/webkiln/docs/webkiln-inspector.png)
 
 If only one [view](Views.md#init-params) is live, that view is used. If more than one is live
-and you omit the id, every view gets an inspector. Pass an id to open one:
+and you omit the id, every view gets an inspector. Pass an id to open that one specifically:
 
 ```text
 Webkiln.OpenDevTools MainUI
