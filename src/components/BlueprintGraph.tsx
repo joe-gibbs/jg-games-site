@@ -173,6 +173,7 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
     moved: boolean;
   } | null>(null);
   const zoomRef = useRef(1);
+  const viewRef = useRef({ x: 0, y: 0, zoom: 1 });
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [zoomMode, setZoomMode] = useState<"automatic" | "fit" | "manual">("automatic");
   const [manualZoom, setManualZoom] = useState(1);
@@ -224,27 +225,44 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
     : zoomMode === "fit"
       ? fitZoom
       : 1;
+  if (zoomMode !== "manual") viewRef.current.zoom = zoom;
   zoomRef.current = zoom;
   const isFitZoom = zoomMode === "fit";
+
+  const applyView = (next: { x: number; y: number; zoom: number }) => {
+    viewRef.current = next;
+    zoomRef.current = next.zoom;
+    const surface = surfaceRef.current;
+    if (surface) {
+      surface.style.transform = `translate(${next.x}px, ${next.y}px) scale(${next.zoom})`;
+    }
+  };
 
   const applyZoom = (nextZoom: number, originX?: number, originY?: number) => {
     const viewport = viewportRef.current;
     const clamped = Math.min(1.3, Math.max(0.25, nextZoom));
-    if (viewport) {
-      const ox = originX ?? viewport.clientWidth / 2;
-      const oy = originY ?? viewport.clientHeight / 2;
-      const worldX = (viewport.scrollLeft + ox) / zoomRef.current;
-      const worldY = (viewport.scrollTop + oy) / zoomRef.current;
-      requestAnimationFrame(() => {
-        viewport.scrollLeft = worldX * clamped - ox;
-        viewport.scrollTop = worldY * clamped - oy;
-      });
-    }
+    const current = viewRef.current;
+    if (!viewport || clamped === current.zoom) return;
+    const ox = originX ?? viewport.clientWidth / 2;
+    const oy = originY ?? viewport.clientHeight / 2;
+    const worldX = (ox - current.x) / current.zoom;
+    const worldY = (oy - current.y) / current.zoom;
+    applyView({
+      x: ox - worldX * clamped,
+      y: oy - worldY * clamped,
+      zoom: clamped,
+    });
     setManualZoom(clamped);
     setZoomMode("manual");
   };
   const applyZoomRef = useRef(applyZoom);
   applyZoomRef.current = applyZoom;
+  const applyViewRef = useRef(applyView);
+  applyViewRef.current = applyView;
+
+  useLayoutEffect(() => {
+    applyView(viewRef.current);
+  });
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -299,7 +317,7 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
     observer.observe(surface);
     surface.querySelectorAll(".bp-node").forEach((node) => observer.observe(node));
     return () => observer.disconnect();
-  }, [graph, zoom]);
+  }, [graph]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -312,8 +330,8 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
         pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
-        scrollLeft: viewport.scrollLeft,
-        scrollTop: viewport.scrollTop,
+        scrollLeft: viewRef.current.x,
+        scrollTop: viewRef.current.y,
         moved: false,
       };
     };
@@ -329,8 +347,11 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
         setTooltip(null);
         setDragging(true);
       }
-      viewport.scrollLeft = drag.scrollLeft - dx;
-      viewport.scrollTop = drag.scrollTop - dy;
+      applyViewRef.current({
+        x: drag.scrollLeft + dx,
+        y: drag.scrollTop + dy,
+        zoom: viewRef.current.zoom,
+      });
     };
 
     const onPointerUp = (event: PointerEvent) => {
@@ -345,11 +366,12 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (!event.ctrlKey && !event.metaKey) return;
       event.preventDefault();
       const rect = viewport.getBoundingClientRect();
+      const delta = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaMode === 2 ? event.deltaY * viewport.clientHeight : event.deltaY;
+      const factor = Math.min(1.15, Math.max(1 / 1.15, Math.exp(-delta * 0.0018)));
       applyZoomRef.current(
-        zoomRef.current * (event.deltaY < 0 ? 1.1 : 1 / 1.1),
+        zoomRef.current * factor,
         event.clientX - rect.left,
         event.clientY - rect.top,
       );
@@ -395,9 +417,9 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
     if (index < 0) return null;
     const measured = pinLayout[pinKey(nodeId, pinId)];
     const width = node.width ?? defaultNodeWidth;
-    const inset = pins[index].type === "exec" ? 14 : 13;
+    const hang = pins[index].type === "exec" ? 6 : 0;
     return {
-      x: measured?.x ?? node.x + (side === "output" ? width - inset : inset),
+      x: measured?.x ?? node.x + (side === "output" ? width + hang : -hang),
       y: measured?.y ?? node.y + headerHeight + bodyPaddingTop + index * pinHeight + pinHeight / 2,
       type: pins[index].type,
     };
@@ -476,12 +498,9 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
               className={isFitZoom ? "is-active" : ""}
               type="button"
               onClick={() => {
-                const viewport = viewportRef.current;
+                applyView({ x: 0, y: 0, zoom: fitZoom });
+                setManualZoom(fitZoom);
                 setZoomMode("fit");
-                if (viewport) {
-                  viewport.scrollLeft = 0;
-                  viewport.scrollTop = 0;
-                }
               }}
             >
               Fit
@@ -493,20 +512,13 @@ export const BlueprintGraph = ({ graph }: { graph: BlueprintGraphData }) => {
         className={`bp-scroll${dragging ? " is-dragging" : ""}`}
         ref={viewportRef}
       >
-        <div
-          className="bp-stage"
-          style={{
-            width: dimensions.width * zoom,
-            height: dimensions.height * zoom,
-          }}
-        >
+        <div className="bp-stage">
           <div
             className="bp-surface"
             ref={surfaceRef}
             style={{
               width: dimensions.width,
               height: dimensions.height,
-              transform: `scale(${zoom})`,
             }}
           >
           <svg

@@ -596,14 +596,18 @@ html::-webkit-scrollbar-corner,
   position: relative;
   width: 100%;
   height: min(28rem, 62vh);
-  overflow: auto;
+  overflow: hidden;
   cursor: grab;
   touch-action: none;
   user-select: none;
   overscroll-behavior: contain;
 }
 .bp-scroll.is-dragging { cursor: grabbing; }
-.bp-stage { position: relative; min-width: 100%; }
+.bp-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 .bp-surface {
   position: relative;
   transform-origin: top left;
@@ -675,22 +679,25 @@ html::-webkit-scrollbar-corner,
 .bp-node-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  overflow: visible;
   padding: 5px 0 7px;
   background: linear-gradient(180deg, rgba(39, 43, 49, 0.97), rgba(23, 26, 30, 0.99));
 }
-.bp-pin-column { min-width: 0; }
+.bp-pin-column { min-width: 0; overflow: visible; }
 .bp-pin {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
   height: 30px;
   min-width: 0;
+  overflow: visible;
   color: #dfe3e8;
   font-size: 10px;
   line-height: 1;
 }
-.bp-pin-column.is-input .bp-pin { padding-left: 8px; }
-.bp-pin-column.is-output .bp-pin { justify-content: flex-end; padding-right: 8px; text-align: right; }
+.bp-pin-column.is-input .bp-pin { padding: 0 8px 0 16px; }
+.bp-pin-column.is-output .bp-pin { justify-content: flex-end; padding: 0 16px 0 8px; text-align: right; }
 .bp-pin.is-hot { background: rgba(255, 255, 255, 0.05); }
 .bp-pin-label,
 .bp-pin-value {
@@ -801,6 +808,8 @@ html::-webkit-scrollbar-corner,
 }
 .bp-pin-glyph {
   --pin-colour: #fff;
+  position: absolute;
+  top: 50%;
   flex: 0 0 auto;
   width: 10px;
   height: 10px;
@@ -809,6 +818,8 @@ html::-webkit-scrollbar-corner,
   background: #1a1d22;
   box-shadow: 0 0 0 1px rgba(2, 4, 7, 0.7);
 }
+.bp-pin-glyph.is-input { left: 0; transform: translate(-50%, -50%); }
+.bp-pin-glyph.is-output { right: 0; transform: translate(50%, -50%); }
 .bp-pin-glyph.is-connected { background: var(--pin-colour); }
 .bp-pin-glyph.is-exec {
   width: 12px;
@@ -818,6 +829,9 @@ html::-webkit-scrollbar-corner,
   background: var(--pin-colour);
   clip-path: polygon(0 0, 100% 50%, 0 100%, 0 70%, 44% 50%, 0 30%);
   box-shadow: none;
+}
+.bp-pin-glyph.is-exec.is-input {
+  clip-path: polygon(100% 0, 0 50%, 100% 100%, 100% 70%, 56% 50%, 100% 30%);
 }
 
 @media (max-width: 900px) {
