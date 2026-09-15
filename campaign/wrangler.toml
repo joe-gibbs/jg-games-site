@@ -1,0 +1,12 @@
+name = "webkiln-marketing-tracking"
+main = "worker.mjs"
+compatibility_date = "2026-09-15"
+account_id = "2d0ec5491ea8f193aab4896dc266b3cb"
+workers_dev = false
+routes = [{ pattern = "jggames.dev/webkiln/track/*", zone_id = "25e517e680933796e84a2570ef9b9af2" }]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "webkiln-marketing-events"
+database_id = "beb04bc6-8753-4bf8-a17b-11960045f031"
+migrations_dir = "migrations"

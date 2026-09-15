@@ -12,6 +12,7 @@ export default defineConfig({
         webkiln: resolve(__dirname, "webkiln/index.html"),
         webkilnDocs: resolve(__dirname, "webkiln/docs/index.html"),
         webkilnDownloads: resolve(__dirname, "webkiln/downloads/index.html"),
+        webkilnTry: resolve(__dirname, "webkiln/try/index.html"),
       },
     },
   },
