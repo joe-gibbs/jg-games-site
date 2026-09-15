@@ -23,7 +23,7 @@ export default function WebkilnTry() {
           <h1>Build game UI<br /><span>with HTML & CSS.</span></h1>
           <div className="try-hero-aside"><p>Webkiln runs your HTML, CSS and JavaScript inside your game, with two-way communication to Blueprint and C++.</p><Actions placement="hero" /></div>
         </div>
-        <video className="try-video" src="/webkiln/campaign/rpg-ui-video.mp4" poster="/webkiln/campaign/rpg-ui-poster.jpg" controls playsInline preload="none" onPlay={() => trackEvent('video_start')} aria-label="RPG interface demonstration" />
+        <video className="try-video" src="/webkiln/campaign/rpg-ui-video.mp4" poster="/webkiln/campaign/rpg-ui-poster.jpg" autoPlay muted loop controls playsInline preload="auto" onPlay={() => trackEvent('video_start')} aria-label="RPG interface demonstration" />
       </section>
       <section className="try-benefits try-shell" aria-label="Features">
         <article><h2>Use your web skills.</h2><p>Build menus and HUDs with React or plain HTML. Use CSS for layout, styling and animation.</p></article>

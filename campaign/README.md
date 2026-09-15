@@ -12,7 +12,7 @@ From the repository root, run:
 wrangler d1 execute webkiln-marketing-events --remote --config campaign/wrangler.toml --file campaign/report.sql
 ```
 
-The 30-day report groups unique page visits, video viewers, demo clicks, trial clicks, and Fab clicks by campaign and creative. A visit ID exists only for a single page load; refreshes count as new visits. It does not identify people. QA traffic is excluded. Clicks are intent signals, not completed downloads or sales. Fab purchases are not observable by this tracker; the known sales baseline is zero.
+The 30-day report groups unique page visits, video viewers, demo clicks, trial clicks, and Fab clicks by campaign and creative. Video starts include muted autoplay and are counted once per page load, including when the video loops. They do not indicate a deliberate play-button click. A visit ID exists only for a single page load; refreshes count as new visits. It does not identify people. QA traffic is excluded. Clicks are intent signals, not completed downloads or sales. Fab purchases are not observable by this tracker; the known sales baseline is zero.
 
 The database is `webkiln-marketing-events` in Cloudflare D1. No public reporting endpoint exposes campaign data. Stored fields are event time, allowlisted UTM tags, page-scoped visit ID, button placement, selected engine and broad device type. No IP address, raw user agent, or cross-site cookie is stored. Known crawlers, prefetches and HEAD requests are excluded, but sophisticated bots can still produce events.
 
