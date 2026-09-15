@@ -11,7 +11,6 @@ function Actions({ placement }: { placement: string }) {
 
 export default function WebkilnTry() {
   const [engine, setEngine] = useState('5.8');
-  const [example, setExample] = useState('shooter');
   useEffect(() => { trackEvent('page_view'); }, []);
   return <>
     <header className="try-header try-shell">
@@ -30,10 +29,6 @@ export default function WebkilnTry() {
         <article><h2>Use your web skills.</h2><p>Build menus and HUDs with React or plain HTML. Use CSS for layout, styling and animation.</p></article>
         <article><h2>Connect it to gameplay.</h2><p>Send health, ammo and inventory data to your UI. Have button clicks call Blueprint or C++ functions.</p></article>
         <article><h2>Inspect your UI.</h2><p>Open DevTools to inspect elements, test CSS changes and debug JavaScript while your game runs in the editor.</p></article>
-      </section>
-      <section className="try-examples try-shell" aria-label="HTML interface examples">
-        <div className="try-example-tabs"><div role="tablist" aria-label="Game type">{[['shooter', 'Shooter'], ['racing', 'Racing']].map(([id, label]) => <button key={id} role="tab" id={`tab-${id}`} aria-selected={example === id} aria-controls="example-preview" onClick={() => setExample(id)}>{label}</button>)}</div></div>
-        <div role="tabpanel" id="example-preview" aria-labelledby={`tab-${example}`}><img src={`/webkiln/campaign/${example}-capture.png`} width="1280" height="720" loading="lazy" alt={`${example === 'shooter' ? 'Shooter' : 'Racing'} interface built with HTML and CSS`} /></div>
       </section>
       <section className="try-evaluate try-shell" id="trial">
         <div><Actions placement="evaluate" /></div>
