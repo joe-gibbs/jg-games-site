@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const base='https://jggames.dev/webkiln/track/dashboard';
+assert.equal((await fetch(`${base}/data`)).status,401);
+const login=await fetch(`${base}/login`,{method:'POST',headers:{Origin:'https://jggames.dev','Content-Type':'application/json'},body:JSON.stringify({password:readFileSync(new URL('.dashboard-password.txt',import.meta.url),'utf8').trim()})});
+assert.equal(login.status,200);
+const cookie=login.headers.get('Set-Cookie');
+assert.match(cookie,/HttpOnly; Secure; SameSite=Strict/);
+const headers={Cookie:cookie.split(';')[0]};
+const result=await fetch(`${base}/data`,{headers});assert.equal(result.status,200);assert.equal(result.headers.get('Cache-Control'),'no-store');
+const data=await result.json();assert.equal(data.filters.includeQa,false);assert.ok(data.creatives.every(row=>row.source!=='qa'));
+const tests=await(await fetch(`${base}/data?qa=1`,{headers})).json();assert.ok(tests.totals.visits>=data.totals.visits);
+assert.equal((await fetch(`${base}/data?from=2026-02-31`,{headers})).status,400);
+assert.equal((await fetch(`${base}/data`,{headers:{Cookie:headers.Cookie+'x'}})).status,401);
+assert.equal((await fetch(`${base}/login`,{method:'POST',headers:{Origin:'https://evil.example'},body:'{}'})).status,403);
+const logout=await fetch(`${base}/logout`,{method:'POST',headers:{...headers,Origin:'https://jggames.dev'}});assert.match(logout.headers.get('Set-Cookie'),/Max-Age=0/);
+console.log(JSON.stringify({unauthorized:'blocked',login:'passed',tamperedCookie:'blocked',invalidDates:'blocked',crossOrigin:'blocked',logout:'passed',qaExcluded:true,totals:data.totals,testInclusiveTotals:tests.totals},null,2));

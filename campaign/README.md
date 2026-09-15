@@ -2,6 +2,10 @@
 
 Landing page: https://jggames.dev/webkiln/try/
 
+Private dashboard: https://jggames.dev/webkiln/dashboard/
+
+The dashboard uses live D1 aggregates with date and device filters, daily charts, creative and button breakdowns, and CSV export. QA is excluded by default. Dates use UTC. The password is generated locally in `campaign/.dashboard-password.txt` (git-ignored). Its SHA-256 hash and a separate signing key are Worker secrets. The browser receives a secure HTTP-only session cookie valid for seven days. Ten login attempts per 15-minute network bucket are allowed; the bucket uses a temporary HMAC of the requesting IP, never a stored raw IP. Rotate both Worker secrets to revoke existing sessions and change the password. Report data is never included in the static site build.
+
 The page ships with the normal Vite build through the existing git-push CI/CD. Only `/webkiln/track/*` is served by the dedicated tracking Worker. To deploy a tracking-code change, run `wrangler deploy --config campaign/wrangler.toml`.
 
 ## Report
@@ -9,7 +13,8 @@ The page ships with the normal Vite build through the existing git-push CI/CD. O
 From the repository root, run:
 
 ```powershell
-wrangler d1 execute webkiln-marketing-events --remote --config campaign/wrangler.toml --file campaign/report.sql
+$trackingQuery = Get-Content campaign/report.sql -Raw
+wrangler d1 execute webkiln-marketing-events --remote --config campaign/wrangler.toml --command $trackingQuery
 ```
 
 The 30-day report groups unique page visits, video viewers, demo clicks, trial clicks, and Fab clicks by campaign and creative. Video starts include muted autoplay and are counted once per page load, including when the video loops. They do not indicate a deliberate play-button click. A visit ID exists only for a single page load; refreshes count as new visits. It does not identify people. QA traffic is excluded. Clicks are intent signals, not completed downloads or sales. Fab purchases are not observable by this tracker; the known sales baseline is zero.

@@ -1,3 +1,4 @@
+import { dashboard } from './dashboard.mjs';
 const PREFIX = '/webkiln/track';
 const VERSIONS = new Set(['4.25', '4.26', '4.27', '5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8']);
 const clean = (value, fallback = 'none') => String(value || fallback).replace(/[^a-zA-Z0-9_. -]/g, '').slice(0, 100) || fallback;
@@ -50,6 +51,7 @@ async function limitedBody(request) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname.startsWith(`${PREFIX}/dashboard/`)) return dashboard(request, env);
     if (url.pathname === `${PREFIX}/health`) {
       if (request.method !== 'GET') return new Response(null, { status:405, headers });
       try { await env.DB.prepare('SELECT 1 FROM events LIMIT 1').first(); return Response.json({status:'ok'}, { headers }); }
