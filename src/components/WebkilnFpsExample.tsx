@@ -30,7 +30,7 @@ const fpsClosingMarkup = `
 </script>`;
 const fpsObjectiveAt = 21.35;
 
-const WebkilnFpsExample = () => {
+const WebkilnFpsExample = ({ onPlay, controls = false }: { onPlay?: () => void; controls?: boolean }) => {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const [fpsObjectiveAdded, setFpsObjectiveAdded] = useState(false);
   const fpsVideoRef = useRef<HTMLVideoElement>(null);
@@ -99,6 +99,8 @@ const WebkilnFpsExample = () => {
             muted
             loop
             playsInline
+            controls={controls}
+            onPlay={onPlay}
             preload="metadata"
             aria-label="The Webkiln HUD running in Unreal Engine's First Person Shooter sample"
           />
