@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import WebkilnFpsExample from './components/WebkilnFpsExample';
+import WebkilnExamples from './components/WebkilnExamples';
 import { webkilnEngineReleases } from './webkilnDownloads';
 import { actionUrl, trackEvent } from './webkiln-tracking';
 
@@ -39,8 +39,8 @@ export default function WebkilnTry() {
           </div>
         </div>
         <figure className="try-live-demo">
-          <WebkilnFpsExample controls onPlay={() => trackEvent('video_start')} />
-          <figcaption>Gameplay updates the HUD. JavaScript adds an objective while the game runs.</figcaption>
+          <WebkilnExamples showProduction={false} onPlay={() => trackEvent('video_start')} />
+          <figcaption>Watch the RPG interface take shape from HTML, CSS and JavaScript. Then edit the code and try the inventory.</figcaption>
         </figure>
       </section>
       <section className="try-benefits try-shell" aria-label="Features">

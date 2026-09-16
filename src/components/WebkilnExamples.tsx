@@ -616,7 +616,7 @@ body { position: relative; }
 
 type PreviewWindow = Window & { __hudCleanup?: () => void };
 
-const WebkilnExamples = () => {
+const WebkilnExamples = ({ showProduction = true, onPlay }: { showProduction?: boolean; onPlay?: () => void }) => {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const lastHotReloadPhase = hotReloadFiles.length - 1;
   const [hotReloadStarted, setHotReloadStarted] = useState(false);
@@ -631,6 +631,14 @@ const WebkilnExamples = () => {
   const hotReloadCodeRef = useRef<HTMLPreElement>(null);
   const hotReloadStartedRef = useRef(false);
   const lastAppliedPhaseRef = useRef(-1);
+
+  useEffect(() => {
+    const video = previewFrameRef.current?.contentDocument?.querySelector("video");
+    if (!video || !onPlay) return;
+    if (!video.paused) onPlay();
+    video.addEventListener("play", onPlay);
+    return () => video.removeEventListener("play", onPlay);
+  }, [onPlay, previewLoadCount]);
 
   useEffect(() => {
     const example = hotReloadExampleRef.current;
@@ -848,7 +856,7 @@ const WebkilnExamples = () => {
           </div>
         </article>
 
-        <article className="production-example" id="fall-of-an-empire">
+        {showProduction && <article className="production-example" id="fall-of-an-empire">
           <header className="production-example-copy">
             <h3>How Fall of an Empire uses Webkiln</h3>
             <p>
@@ -869,7 +877,7 @@ const WebkilnExamples = () => {
               loading="lazy"
             />
           </figure>
-        </article>
+        </article>}
       </div>
     </section>
   );
