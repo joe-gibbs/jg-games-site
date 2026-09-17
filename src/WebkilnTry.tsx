@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import WebkilnExamples from './components/WebkilnExamples';
 import { webkilnEngineReleases } from './webkilnDownloads';
 import { actionUrl, trackEvent } from './webkiln-tracking';
@@ -16,7 +16,27 @@ function Trial() {
 }
 
 export default function WebkilnTry() {
+  const pricingRef = useRef<HTMLDivElement>(null);
   useEffect(() => { trackEvent('page_view'); }, []);
+  useEffect(() => {
+    const pricing = pricingRef.current;
+    if (!pricing) return;
+    let visible = false;
+    let timer = 0;
+    let recorded = false;
+    const schedule = () => {
+      window.clearTimeout(timer);
+      if (!visible || recorded || document.visibilityState !== 'visible') return;
+      timer = window.setTimeout(() => { recorded = true; trackEvent('pricing_view'); }, 1000);
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+      schedule();
+    }, { threshold: 0.5 });
+    observer.observe(pricing);
+    document.addEventListener('visibilitychange', schedule);
+    return () => { observer.disconnect(); window.clearTimeout(timer); document.removeEventListener('visibilitychange', schedule); };
+  }, []);
   return <>
     <header className="try-header try-shell">
       <a className="try-brand" href="/webkiln/"><img src="/webkiln-logo.svg" alt="" />Webkiln</a>
@@ -39,7 +59,7 @@ export default function WebkilnTry() {
           </div>
         </div>
         <figure className="try-live-demo">
-          <WebkilnExamples showProduction={false} onPlay={() => trackEvent('video_start')} />
+          <WebkilnExamples showProduction={false} onPlay={() => trackEvent('video_start')} onComplete={() => trackEvent('demo_complete')} onInteract={() => trackEvent('inventory_interaction')} />
           <figcaption>Watch the RPG interface take shape from HTML, CSS and JavaScript. Then edit the code and try the inventory.</figcaption>
         </figure>
       </section>
@@ -64,7 +84,7 @@ export default function WebkilnTry() {
             <li>HUDs, world-space UI and Unreal textures</li>
           </ul>
         </div>
-        <div className="try-offer">
+        <div className="try-offer" ref={pricingRef}>
           <h3>Get Webkiln</h3>
           <p className="try-price"><span>From</span> US$99.99</p>
           <p>Personal and Professional licences on Fab. Regional prices and taxes vary.</p>

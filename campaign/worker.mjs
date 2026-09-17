@@ -1,5 +1,6 @@
 import { dashboard } from './dashboard.mjs';
 const PREFIX = '/webkiln/track';
+const ENGAGEMENT_EVENTS = new Set(['demo_complete', 'inventory_interaction', 'pricing_view']);
 const VERSIONS = new Set(['4.25', '4.26', '4.27', '5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8']);
 const clean = (value, fallback = 'none') => String(value || fallback).replace(/[^a-zA-Z0-9_. -]/g, '').slice(0, 100) || fallback;
 const uuid = value => /^[0-9a-f-]{36}$/i.test(value || '') ? value : null;
@@ -28,7 +29,8 @@ function skipTracking(request) {
 async function record(request, env, event, params, id = crypto.randomUUID()) {
   if (skipTracking(request)) return;
   const a = attribution(params);
-  await env.DB.prepare('INSERT OR IGNORE INTO events (id, occurred_at, event, visit_id, source, medium, campaign, content, term, placement, engine, device) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+  const table = ENGAGEMENT_EVENTS.has(event) ? 'engagement_events' : 'events';
+  await env.DB.prepare(`INSERT OR IGNORE INTO ${table} (id, occurred_at, event, visit_id, source, medium, campaign, content, term, placement, engine, device) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
     .bind(id, new Date().toISOString(), event, uuid(params.get('visit')), a.source, a.medium, a.campaign, a.content, a.term, clean(params.get('placement')), VERSIONS.has(params.get('engine')) ? params.get('engine') : null, device(request)).run();
 }
 async function limitedBody(request) {
@@ -62,7 +64,7 @@ export default {
       if (request.headers.get('Origin') !== url.origin) return new Response(null, {status:403, headers});
       let body;
       try { body = JSON.parse(await limitedBody(request)); } catch { return new Response(null, {status:400, headers}); }
-      if (!body || !['page_view', 'video_start'].includes(body.event) || !uuid(body.id) || typeof body.query !== 'string' || body.query.length > 1200) return new Response(null, {status:400, headers});
+      if (!body || !['page_view', 'video_start', ...ENGAGEMENT_EVENTS].includes(body.event) || !uuid(body.id) || typeof body.query !== 'string' || body.query.length > 1200) return new Response(null, {status:400, headers});
       try { await record(request, env, body.event, new URLSearchParams(body.query), body.id); return new Response(null, {status:204, headers}); }
       catch { console.error('Webkiln event storage failed'); return new Response(null, {status:503, headers}); }
     }

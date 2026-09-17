@@ -589,9 +589,9 @@ window.__hudCleanup = () => {
 };`;
 
 const hotReloadFiles = [
-  { name: "hud.html", label: "HTML", language: "xml", source: hotReloadHtml, step: 6, delay: 16 },
-  { name: "hud.css", label: "CSS", language: "css", source: hotReloadCss, step: 14, delay: 7 },
-  { name: "hud.js", label: "JavaScript", language: "javascript", source: hotReloadJs, step: 6, delay: 14 },
+  { name: "hud.html", label: "HTML", language: "xml", source: hotReloadHtml },
+  { name: "hud.css", label: "CSS", language: "css", source: hotReloadCss },
+  { name: "hud.js", label: "JavaScript", language: "javascript", source: hotReloadJs },
 ] as const;
 
 const previewDocument = `<!doctype html>
@@ -616,7 +616,7 @@ body { position: relative; }
 
 type PreviewWindow = Window & { __hudCleanup?: () => void };
 
-const WebkilnExamples = ({ showProduction = true, onPlay }: { showProduction?: boolean; onPlay?: () => void }) => {
+const WebkilnExamples = ({ showProduction = true, onPlay, onComplete, onInteract }: { showProduction?: boolean; onPlay?: () => void; onComplete?: () => void; onInteract?: () => void }) => {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const lastHotReloadPhase = hotReloadFiles.length - 1;
   const [hotReloadStarted, setHotReloadStarted] = useState(false);
@@ -630,7 +630,9 @@ const WebkilnExamples = ({ showProduction = true, onPlay }: { showProduction?: b
   const previewFrameRef = useRef<HTMLIFrameElement>(null);
   const hotReloadCodeRef = useRef<HTMLPreElement>(null);
   const hotReloadStartedRef = useRef(false);
-  const lastAppliedPhaseRef = useRef(-1);
+  const completedTrackedRef = useRef(false);
+  const interactedTrackedRef = useRef(false);
+  const [previewReady, setPreviewReady] = useState(false);
 
   useEffect(() => {
     const video = previewFrameRef.current?.contentDocument?.querySelector("video");
@@ -639,6 +641,37 @@ const WebkilnExamples = ({ showProduction = true, onPlay }: { showProduction?: b
     video.addEventListener("play", onPlay);
     return () => video.removeEventListener("play", onPlay);
   }, [onPlay, previewLoadCount]);
+
+  useEffect(() => {
+    const example = hotReloadExampleRef.current;
+    if (!example || !previewReady || !onComplete || completedTrackedRef.current) return;
+    let visible = false;
+    const report = () => {
+      if (!visible || document.visibilityState !== "visible" || completedTrackedRef.current) return;
+      completedTrackedRef.current = true;
+      onComplete();
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting && entry.intersectionRatio >= 0.2;
+      report();
+    }, { threshold: 0.2 });
+    observer.observe(example);
+    document.addEventListener("visibilitychange", report);
+    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", report); };
+  }, [onComplete, previewReady]);
+
+  useEffect(() => {
+    const frameDocument = previewFrameRef.current?.contentDocument;
+    if (!frameDocument || !previewReady || !onInteract) return;
+    const report = (event: MouseEvent) => {
+      const target = event.target as Element | null;
+      if (!event.isTrusted || interactedTrackedRef.current || !target?.closest?.("#inventory-toggle, #inventory-close, .inventory-items button")) return;
+      interactedTrackedRef.current = true;
+      onInteract();
+    };
+    frameDocument.addEventListener("click", report);
+    return () => frameDocument.removeEventListener("click", report);
+  }, [onInteract, previewLoadCount, previewReady]);
 
   useEffect(() => {
     const example = hotReloadExampleRef.current;
@@ -666,12 +699,12 @@ const WebkilnExamples = ({ showProduction = true, onPlay }: { showProduction?: b
     if (!hotReloadStarted || hotReloadComplete || reducedMotion) return;
 
     const file = hotReloadFiles[hotReloadPhase];
-    let position = 0;
+    const startedAt = performance.now();
     let timer = 0;
 
     const typeNextChunk = () => {
-      const previousPosition = position;
-      position = Math.min(position + file.step, file.source.length);
+      const progress = Math.min((performance.now() - startedAt) / 2000, 1);
+      const position = Math.floor(progress * file.source.length);
       setTypedCharacterCount(position);
 
       if (position === file.source.length) {
@@ -680,21 +713,17 @@ const WebkilnExamples = ({ showProduction = true, onPlay }: { showProduction?: b
           return;
         }
 
-        timer = window.setTimeout(() => {
-          const nextPhase = hotReloadPhase + 1;
-          setTypedCharacterCount(0);
-          setHotReloadPhase(nextPhase);
-          setSelectedHotReloadTab(nextPhase);
-        }, 750);
+        const nextPhase = hotReloadPhase + 1;
+        setTypedCharacterCount(0);
+        setHotReloadPhase(nextPhase);
+        setSelectedHotReloadTab(nextPhase);
         return;
       }
 
-      const typedChunk = file.source.slice(previousPosition, position);
-      const delay = file.delay + (typedChunk.includes("\n") ? 35 : 0);
-      timer = window.setTimeout(typeNextChunk, delay);
+      timer = window.setTimeout(typeNextChunk, 40);
     };
 
-    timer = window.setTimeout(typeNextChunk, hotReloadPhase === 0 ? 650 : 300);
+    typeNextChunk();
     return () => window.clearTimeout(timer);
   }, [hotReloadComplete, hotReloadPhase, hotReloadStarted, lastHotReloadPhase, reducedMotion]);
 
@@ -708,24 +737,21 @@ const WebkilnExamples = ({ showProduction = true, onPlay }: { showProduction?: b
     const style = frameDocument?.getElementById("hot-style");
     if (!frameDocument || !frameWindow || !root || !style) return;
 
-    if (hotReloadPhase === 0) {
-      if (typedCharacterCount === 0) {
-        frameWindow.__hudCleanup?.();
-        frameWindow.__hudCleanup = undefined;
-        frameDocument.querySelector("script[data-hot-reload]")?.remove();
-      }
-      root.innerHTML = hotReloadHtml.slice(0, typedCharacterCount);
-      style.textContent = "";
-    } else {
-      if (!root.hasChildNodes() || lastAppliedPhaseRef.current === 0) {
-        root.innerHTML = hotReloadHtml;
-      }
-      style.textContent = hotReloadPhase === 1
-        ? hotReloadCss.slice(0, typedCharacterCount)
-        : hotReloadCss;
+    // Insert whole, styled components so the reveal never shows broken markup.
+    style.textContent = hotReloadCss;
+    const template = frameDocument.createElement("template");
+    template.innerHTML = hotReloadHtml;
+    const sourceHud = template.content.firstElementChild!;
+    let hud = root.firstElementChild;
+    if (!hud) {
+      hud = sourceHud.cloneNode(false) as Element;
+      root.appendChild(hud);
     }
-
-    lastAppliedPhaseRef.current = hotReloadPhase;
+    const progress = (hotReloadPhase + typedCharacterCount / hotReloadFiles[hotReloadPhase].source.length) / hotReloadFiles.length;
+    const count = Math.ceil(progress * sourceHud.children.length);
+    while (hud.children.length < count) {
+      hud.appendChild(sourceHud.children[hud.children.length].cloneNode(true));
+    }
   }, [hotReloadComplete, hotReloadPhase, previewLoadCount, typedCharacterCount]);
 
   useEffect(() => {
@@ -749,6 +775,7 @@ const WebkilnExamples = ({ showProduction = true, onPlay }: { showProduction?: b
       script.dataset.hotReload = "true";
       script.textContent = editedSources[2];
       frameDocument.body.appendChild(script);
+      setPreviewReady(true);
     }, 220);
 
     return () => window.clearTimeout(timer);
@@ -783,7 +810,7 @@ const WebkilnExamples = ({ showProduction = true, onPlay }: { showProduction?: b
   ).value;
 
   const handlePreviewLoad = () => {
-    lastAppliedPhaseRef.current = -1;
+    setPreviewReady(false);
     setPreviewLoadCount(count => count + 1);
   };
 

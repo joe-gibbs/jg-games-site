@@ -32,11 +32,11 @@ export function filters(params){
   if(!['all','Windows','macOS','Linux','Android','iOS','Other'].includes(device))throw new Error('Invalid device.');
   return {from,to,start:`${from}T00:00:00.000Z`,end:new Date(Date.parse(to)+86400000).toISOString(),device,includeQa:params.get('qa')==='1'};
 }
-const COUNTS=[['page_view','visits'],['video_start','plays'],['demo_click','demo'],['trial_click','trial'],['fab_click','fab']].map(([event,name])=>`COUNT(DISTINCT CASE WHEN event='${event}' THEN visit_id END) AS ${name}`).join(', ');
+const COUNTS=[['page_view','visits'],['video_start','plays'],['demo_click','demo'],['trial_click','trial'],['fab_click','fab'],['demo_complete','completed'],['inventory_interaction','interacted'],['pricing_view','pricing']].map(([event,name])=>`COUNT(DISTINCT CASE WHEN event='${event}' THEN visit_id END) AS ${name}`).join(', ');
 export function reportQueries(f){
   const where=`occurred_at >= ? AND occurred_at < ?${f.includeQa?'':" AND source <> 'qa'"}${f.device==='all'?'':' AND device = ?'}`;
   const params=[f.start,f.end,...(f.device==='all'?[]:[f.device])];
-  const query=(select,tail='')=>({sql:`SELECT ${select}, ${COUNTS} FROM events WHERE ${where} ${tail}`,params});
+  const query=(select,tail='')=>({sql:`SELECT ${select}, ${COUNTS} FROM (SELECT * FROM events UNION ALL SELECT * FROM engagement_events) WHERE ${where} ${tail}`,params});
   return [
     query("'total' AS name"),
     query('substr(occurred_at,1,10) AS day','GROUP BY day ORDER BY day'),

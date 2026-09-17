@@ -23,6 +23,10 @@ The database is `webkiln-marketing-events` in Cloudflare D1. No public reporting
 
 ## Validation
 
+Engagement tracking was added on 17 September 2026. `demo_complete` records a fully initialized RPG UI when at least 20% of the demo is visible in an active tab. It is an automatic completion signal, not proof of attention. `inventory_interaction` requires a trusted click on inventory open/close or an item; the automatic inventory animation does not count. `pricing_view` requires at least half the offer card to stay visible for one second in an active tab. Each is counted once per page visit. Earlier visits have no engagement observations.
+
+For this release, apply `campaign/migrations/0003_engagement.sql` with Wrangler D1 before deploying the Worker, then publish the site. The migration only adds a table and index; existing events remain intact. Dashboard totals, daily charts, creative rows and CSV include the new counts. They do not count as download or purchase clicks.
+
 ```powershell
 node --test campaign/tests/worker.test.mjs
 node campaign/verify-production.mjs

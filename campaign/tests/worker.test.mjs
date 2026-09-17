@@ -36,3 +36,14 @@ test('tracking storage failure never blocks a demo or purchase click', async () 
   assert.match(result.headers.get('Location'), /Webkiln-FPS-Sample.zip/);
 });
 
+
+test('engagement events are accepted and stored separately from outbound clicks', async () => {
+  for (const event of ['demo_complete', 'inventory_interaction', 'pricing_view']) {
+    let recorded;
+    const env = { DB: { prepare(sql) { return { bind(...values) { recorded = { sql, values }; return this; }, async run() {} }; } } };
+    const request = new Request('https://jggames.dev/webkiln/track/events', { method: 'POST', headers: { Origin: 'https://jggames.dev', 'Content-Type': 'application/json' }, body: JSON.stringify({ event, id: crypto.randomUUID(), query: new URLSearchParams({ visit: crypto.randomUUID(), utm_source: 'qa' }).toString() }) });
+    assert.equal((await worker.fetch(request, env)).status, 204);
+    assert.match(recorded.sql, /INSERT OR IGNORE INTO engagement_events/);
+    assert.equal(recorded.values[2], event);
+  }
+});

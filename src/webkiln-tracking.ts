@@ -9,7 +9,7 @@ for (const key of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'u
 const visit = crypto.randomUUID();
 campaign.set('visit', visit);
 const sent = new Set<string>();
-export function trackEvent(name: 'page_view' | 'video_start') {
+export function trackEvent(name: 'page_view' | 'video_start' | 'demo_complete' | 'inventory_interaction' | 'pricing_view') {
   if (sent.has(name)) return;
   sent.add(name);
   void fetch(`${trackingPath}/events`, {

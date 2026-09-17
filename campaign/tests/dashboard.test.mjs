@@ -51,6 +51,7 @@ test('queries bind user values, exclude QA by default and count unique clickers'
 test('real SQLite reports deduplicate actions, exclude QA, respect dates and device filters',async()=>{
   const db=new DatabaseSync(':memory:');
   db.exec(readFileSync(new URL('../migrations/0001_events.sql',import.meta.url),'utf8'));
+  db.exec(readFileSync(new URL('../migrations/0003_engagement.sql',import.meta.url),'utf8'));
   const insert=db.prepare('INSERT INTO events VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
   let id=0;
   const add=(event,visit,source='reddit',day='2026-09-15',device='Windows')=>insert.run(String(++id),`${day}T12:00:00.000Z`,event,visit,source,'paid_social','campaign','creative','unrealengine','hero',null,device);
@@ -63,5 +64,23 @@ test('real SQLite reports deduplicate actions, exclude QA, respect dates and dev
   assert.equal(query('&qa=1')[0][0].visits,3);
   const empty=reportQueries(filters(new URLSearchParams('from=2026-10-01&to=2026-10-01')))[0];
   assert.equal(db.prepare(empty.sql).get(...empty.params).visits,0);
+  db.close();
+});
+
+test('engagement migration preserves history and reports distinct visits without inventing conversions',()=>{
+  const db=new DatabaseSync(':memory:');
+  db.exec(readFileSync(new URL('../migrations/0001_events.sql',import.meta.url),'utf8'));
+  db.prepare('INSERT INTO events VALUES (?,?,?,?,?,?,?,?,?,?,?,?)').run('old','2026-09-17T10:00:00Z','page_view','visitor','reddit','paid','campaign','creative','term','hero',null,'Windows');
+  db.exec(readFileSync(new URL('../migrations/0003_engagement.sql',import.meta.url),'utf8'));
+  const insert=db.prepare('INSERT INTO engagement_events VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
+  let id=0;
+  for(const event of ['demo_complete','demo_complete','inventory_interaction','pricing_view']) insert.run(String(++id),'2026-09-17T10:01:00Z',event,'visitor','reddit','paid','campaign','creative','term','none',null,'Windows');
+  insert.run('qa','2026-09-17T10:01:00Z','demo_complete','qa-visitor','qa','paid','campaign','creative','term','none',null,'Windows');
+  const query=reportQueries(filters(new URLSearchParams('from=2026-09-17&to=2026-09-17')))[0];
+  const row=db.prepare(query.sql).get(...query.params);
+  assert.equal(row.visits,1);assert.equal(row.completed,1);assert.equal(row.interacted,1);assert.equal(row.pricing,1);
+  assert.equal(row.demo,0);assert.equal(row.trial,0);assert.equal(row.fab,0);
+  assert.equal(db.prepare('SELECT COUNT(*) AS n FROM events').get().n,1);
+  assert.throws(()=>insert.run('bad','2026-09-17T10:01:00Z','purchase','visitor','reddit','paid','campaign','creative','term','none',null,'Windows'));
   db.close();
 });
