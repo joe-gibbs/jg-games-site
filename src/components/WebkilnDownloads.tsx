@@ -1,5 +1,6 @@
 import {
   webkilnEngineReleases,
+  webkilnFabUrl,
   webkilnPackagedDemoUrl,
 } from "../webkilnDownloads";
 
@@ -31,6 +32,7 @@ const WebkilnDownloads = () => {
           <a href="/webkiln/">Home</a>
           <a href="/webkiln/downloads/" aria-current="page">Downloads</a>
           <a href="/webkiln/docs/">Documentation</a>
+          <a href={webkilnFabUrl} target="_blank" rel="noopener noreferrer">Fab</a>
           <a href="/">JG Games</a>
         </nav>
       </header>
@@ -71,6 +73,7 @@ const WebkilnDownloads = () => {
       <footer className="wk-footer">
         <span>Copyright JG Games 2026</span>
         <nav aria-label="Footer navigation">
+          <a href={webkilnFabUrl} target="_blank" rel="noopener noreferrer">Fab</a>
           <a href="/webkiln/docs/">Documentation</a>
           <a href="https://discord.gg/HZkcDwkdBU" target="_blank" rel="noopener noreferrer">Discord</a>
           <a href="mailto:contact@jggames.dev">Contact</a>

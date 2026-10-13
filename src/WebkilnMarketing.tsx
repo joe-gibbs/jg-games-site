@@ -1,5 +1,6 @@
 import WebkilnExamples from "./components/WebkilnExamples";
 import WebkilnFpsExample from "./components/WebkilnFpsExample";
+import { webkilnFabUrl } from "./webkilnDownloads";
 
 const capabilities = [
   {
@@ -40,6 +41,7 @@ const WebkilnMarketing = () => {
           <a href="#webkiln-examples">Examples</a>
           <a href="/webkiln/downloads/">Downloads</a>
           <a href="/webkiln/docs/">Documentation</a>
+          <a href={webkilnFabUrl} target="_blank" rel="noopener noreferrer">Fab</a>
           <a href="/">JG Games</a>
         </nav>
       </header>
@@ -54,8 +56,13 @@ const WebkilnMarketing = () => {
               heavy interfaces off the game thread to speed things up.
             </p>
             <div className="btn-group">
-              <a href="/webkiln/docs/" className="btn btn-primary">
-                Documentation
+              <a
+                href={webkilnFabUrl}
+                className="btn btn-primary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get on Fab
               </a>
               <a href="#webkiln-examples" className="btn btn-ghost">
                 Examples
@@ -98,11 +105,16 @@ const WebkilnMarketing = () => {
               polish of the modern web, and ship them in a fraction of the time.
             </p>
             <div className="btn-group">
-              <a href="/webkiln/docs/?doc=quick-start" className="btn btn-primary">
-                Getting started
+              <a
+                href={webkilnFabUrl}
+                className="btn btn-primary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get on Fab
               </a>
-              <a href="mailto:contact@jggames.dev" className="btn btn-ghost">
-                Contact JG Games
+              <a href="/webkiln/docs/?doc=quick-start" className="btn btn-ghost">
+                Getting started
               </a>
             </div>
           </div>
@@ -112,6 +124,7 @@ const WebkilnMarketing = () => {
       <footer className="wk-footer">
         <span>Copyright JG Games 2026</span>
         <nav aria-label="Footer navigation">
+          <a href={webkilnFabUrl} target="_blank" rel="noopener noreferrer">Fab</a>
           <a href="/webkiln/docs/">Documentation</a>
           <a href="https://discord.gg/HZkcDwkdBU" target="_blank" rel="noopener noreferrer">Discord</a>
           <a href="mailto:contact@jggames.dev">Contact</a>

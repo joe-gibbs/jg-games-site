@@ -6,6 +6,9 @@ export type WebkilnEngineRelease = {
 
 export const webkilnProductVersion = "1.82";
 
+export const webkilnFabUrl =
+  "https://www.fab.com/listings/0c77209f-2e68-449d-8773-5d0c3d916ede";
+
 export const webkilnPackagedDemoUrl =
   "https://downloads.jggames.dev/samples/Webkiln-FPS-Sample.zip";
 

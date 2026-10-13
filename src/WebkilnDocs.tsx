@@ -15,6 +15,7 @@ import xml from "highlight.js/lib/languages/xml";
 import { BlueprintEmbed } from "./components/BlueprintExamples";
 import { DocsSearch } from "./components/DocsSearch";
 import { LanguageIcon } from "./components/LanguageIcon";
+import { webkilnFabUrl } from "./webkilnDownloads";
 
 hljs.registerLanguage("bash", bash);
 hljs.registerLanguage("cpp", cpp);
@@ -285,6 +286,7 @@ function WebkilnDocs() {
         </a>
         <nav aria-label="Documentation links">
           <a href="/webkiln/downloads/">Downloads</a>
+          <a href={webkilnFabUrl} target="_blank" rel="noopener noreferrer">Fab</a>
           <a href="/">JG Games</a>
           <a href="mailto:contact@jggames.dev">Support</a>
         </nav>
@@ -331,6 +333,7 @@ function WebkilnDocs() {
                 <span>Documentation</span>
               </div>
               <nav aria-label="Support">
+                <a href={webkilnFabUrl} target="_blank" rel="noopener noreferrer">Fab</a>
                 <a href="https://discord.gg/HZkcDwkdBU" target="_blank" rel="noopener noreferrer">Discord</a>
                 <a href="mailto:contact@jggames.dev">contact@jggames.dev</a>
               </nav>

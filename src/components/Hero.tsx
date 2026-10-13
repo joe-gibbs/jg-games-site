@@ -1,4 +1,5 @@
 import React from "react";
+import { webkilnFabUrl } from "../webkilnDownloads";
 
 const Hero: React.FC = () => {
   return (
@@ -11,7 +12,9 @@ const Hero: React.FC = () => {
 
         <nav className="hero-nav" aria-label="Main sections">
           <a href="#fall-of-an-empire">Fall of an Empire</a>
-          <a href="/webkiln/">Webkiln</a>
+          <a href={webkilnFabUrl} target="_blank" rel="noopener noreferrer">
+            Webkiln
+          </a>
           <a href="#contact">Contact</a>
         </nav>
       </div>

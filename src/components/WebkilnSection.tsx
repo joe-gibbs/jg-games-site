@@ -1,4 +1,5 @@
 import React from "react";
+import { webkilnFabUrl } from "../webkilnDownloads";
 
 const WebkilnSection: React.FC = () => {
   return (
@@ -21,19 +22,26 @@ const WebkilnSection: React.FC = () => {
           </p>
 
           <div className="btn-group">
-            <a href="/webkiln/" className="btn btn-primary">
-              Explore Webkiln
+            <a
+              href={webkilnFabUrl}
+              className="btn btn-primary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Get on Fab
             </a>
-            <a href="/webkiln/docs/" className="btn btn-ghost">
-              Documentation
+            <a href="/webkiln/" className="btn btn-ghost">
+              Explore Webkiln
             </a>
           </div>
         </div>
 
         <a
           className="webkiln-teaser-media"
-          href="/webkiln/"
-          aria-label="Explore Webkiln"
+          href={webkilnFabUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Get Webkiln on Fab"
         >
           <video
             src="/webkiln/showcase/fps-demo.mp4"

@@ -16,6 +16,8 @@ window.webkiln.input.configure({
 
 **On Input State Changed** tells you whether the world is blocked and which cursor the DOM wants.
 
+Ctrl-wheel and touchpad pinch leave the page's UI scale unchanged. Your wheel handlers still receive these events, so you can use them to zoom a map or canvas. Ordinary wheel scrolling keeps its usual behaviour.
+
 ## Keyboard
 
 Clicking something the browser handles focuses the widget in Slate and CEF. When Slate focus leaves, browser focus leaves with it. **Set Browser Focus** on the view does the same thing from Blueprint or C++.

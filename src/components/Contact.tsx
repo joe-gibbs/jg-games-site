@@ -1,4 +1,5 @@
 import React from "react";
+import { webkilnFabUrl } from "../webkilnDownloads";
 
 const Contact: React.FC = () => {
   return (
@@ -25,7 +26,12 @@ const Contact: React.FC = () => {
         </nav>
 
         <footer className="main-footer">
-          &copy; {new Date().getFullYear()} Joe Gibbs. All rights reserved.
+          <span>&copy; {new Date().getFullYear()} Joe Gibbs. All rights reserved.</span>
+          <nav aria-label="Footer">
+            <a href={webkilnFabUrl} target="_blank" rel="noopener noreferrer">
+              Webkiln on Fab
+            </a>
+          </nav>
         </footer>
       </div>
     </section>

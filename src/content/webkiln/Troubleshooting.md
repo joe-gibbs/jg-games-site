@@ -14,3 +14,4 @@
 - **Subprocess mismatch:** Replace the complete runtime from one release.
 - **A Webkiln logo sits in the corner of every view:** Watermarked evaluation build. See [Packaging](Packaging.md).
 - **Package Project fails with `Could not find definition for module 'Webkiln'`:** Trial zips cannot be packaged. See [Packaging](Packaging.md).
+- **UE4 compilation fails with `C4668` / `C4067` mentioning `__has_cpp_attribute`:** The bundled CEF header needs Webkiln's compiler-compatibility patch. Replace the complete plugin with a patched package for your Unreal version; do not define this compiler macro globally or disable the errors. If it persists, include the full build log, Unreal version and Visual Studio toolset version in your support request.
