@@ -63,6 +63,11 @@ const documentOrder = [
   "Settings.md",
   "Packaging.md",
   "CppAPI.md",
+  "Linux.md",
+  "Mac.md",
+  "IOS.md",
+  "Android.md",
+  "Mobile.md",
   "Compatibility.md",
   "Diagnostics.md",
   "Troubleshooting.md",
@@ -83,6 +88,10 @@ const navigationGroups = [
     files: ["Views.md", "Bridge.md", "Settings.md", "Packaging.md", "CppAPI.md"],
   },
   {
+    label: "Platforms",
+    files: ["Linux.md", "Mac.md", "IOS.md", "Android.md", "Mobile.md"],
+  },
+  {
     label: "Support",
     files: ["Compatibility.md", "Diagnostics.md", "Troubleshooting.md", "SecurityAndSupport.md"],
   },
@@ -101,6 +110,9 @@ const slugAliases: Record<string, string> = {
   "webkiln-hit": "hit-testing",
   "webkiln-texture": "textures",
   "unreal-textures": "textures",
+  macos: "mac",
+  iphone: "ios",
+  ipad: "ios",
 };
 
 const slugFromFile = (file: string) => file

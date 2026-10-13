@@ -6,6 +6,8 @@ First you need the plugin in your project, an HTML page, and that page on the HU
 
 Copy the packaged `Webkiln` folder into the project's `Plugins` directory. 
 
+Use the package for your target platform. The public trial zips are Windows-only; source-build setup is covered in [Linux](Linux.md), [macOS](Mac.md), [iOS/iPadOS](IOS.md) and [Android](Android.md).
+
 Enable **Webkiln** under **Edit > Plugins**, turn off Unreal's **Web Browser** and **Web Browser Widget** plugins, and restart the editor. See [Compatibility](Compatibility.md) for platforms, or [Troubleshooting](Troubleshooting.md) if that dialog keeps coming back.
 
 ![Plugins window with Webkiln enabled](/webkiln/docs/plugins-webkiln.png)
@@ -88,4 +90,4 @@ Hit Play and the page should show up over the game.
 
 ![HUD drawn over the game](/webkiln/docs/hud-play.jpg)
 
-In the editor you can inspect it with **Open DevTools** on the view, or with Chromium remote debugging - the port is under [Project settings](Settings.md#development) (default `9222`).
+On desktop CEF backends, inspect the page with **Open DevTools** on the view or Chromium remote debugging. The port is under [Project settings](Settings.md#development) (default `9222`). Mobile uses the system web engine; these CEF tools do not apply.

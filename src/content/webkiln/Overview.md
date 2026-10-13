@@ -8,6 +8,8 @@ You can use it for [HUDs](HUD.md), menus and [screens that sit in the world](Wor
 
 Webkiln supports Unreal Engine 4.25 through 5.8 on Windows 64-bit. Full details are in [Compatibility](Compatibility.md).
 
+Separate source builds are available for [Linux](Linux.md), [macOS](Mac.md), [iOS/iPadOS](IOS.md) and [Android](Android.md). Those pages cover setup, rendering differences and the checks completed for each platform.
+
 ## Main elements
 
 | Piece | Role |

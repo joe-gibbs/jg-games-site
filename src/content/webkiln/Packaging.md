@@ -8,7 +8,7 @@ If you only added a folder with [`RegisterResourceMount`](CppAPI.md) at runtime,
 
 Watermarked trial zips, including the FPS sample that ships them, do not support **File > Package Project**. Unreal has to compile the game target against Webkiln, and those zips omit plugin source files. Packaging therefore fails with `Could not find definition for module 'Webkiln'`. 
 
-## Linux development candidate
+## Linux source package
 
 Install the complete candidate directory as `Plugins/Webkiln` in the consumer
 project and compile it with Unreal 5.7+ and its matching Linux toolchain.
@@ -22,3 +22,15 @@ directory. Keep that layout so the game can find `libcef.so` and the browser
 subprocess after moving the package. `WebkilnSubprocess` must remain executable;
 copying through Windows filesystems may require restoring that permission on
 Linux. See [Compatibility](Compatibility.md) for the candidate's tested scope.
+
+The [Linux](Linux.md) page covers toolchains and rendering options.
+
+## Mac source package
+
+Build for Apple Silicon `arm64` with Metal. The source package needs the complete Mac CEF runtime, wrapper and helper apps. Unreal stages the framework and five helpers under the game's `Contents/Frameworks` directory. Preserve their bundle structure, framework symlinks and nested signatures. Sign the complete game through your Apple distribution process; development ad-hoc signing is only a local check. See [macOS](Mac.md) for engine integration and app verification.
+
+## Android and iOS source packages
+
+Build the mobile source plugin with Unreal 5.7 or newer and the SDKs required by that engine version. Both platforms use their system browser and package no CEF runtime. They still need the trusted local HTML, scripts, fonts and images staged with the game.
+
+Android includes its Java classes through `Source/Webkiln/Android/Webkiln_UPL.xml`; keep that file and its adjacent Java folder. Select Vulkan for the Android game. iOS links UIKit and WebKit and needs the app's normal signing and provisioning. See [Android](Android.md) and [iOS/iPadOS](IOS.md) for the setup steps and tested configurations.
