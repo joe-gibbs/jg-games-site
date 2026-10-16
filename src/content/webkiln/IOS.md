@@ -15,7 +15,7 @@ The shared `gameUI` request, event and readiness APIs work with this backend. Lo
 
 ## Layout and touch input
 
-The browser appears above Unreal's rendered widgets. It follows the host widget's position, scale, rotation, shear, opacity and rectangular viewport clipping. UIKit owns touch input, scrolling and the keyboard. The overlay hides when its widget stops being painted or is destroyed.
+The browser appears above Unreal's rendered widgets. It follows the host widget's position, scale, rotation, shear, opacity and rectangular viewport clipping. Webkiln disables UIKit's automatic scroll-view insets because Slate already positions the browser viewport; this keeps visible controls aligned with browser-local hit regions. UIKit owns touch input, scrolling and the keyboard. The overlay hides when its widget stops being painted or is destroyed.
 
 By default the visible browser rectangle accepts touches. To let the game receive touches outside specific controls, supply browser-local rectangles as `[x, y, width, height]`, normalised to `0..1`:
 
@@ -39,4 +39,6 @@ Local HTML audio and video require a user gesture by default; use `playsinline` 
 
 Full Unreal iOS Development and Shipping plugin builds passed with SDK 26.5 and a plugin deployment target of iOS 15. A separate iOS 26.5 simulator test passed the production bootstrap, origin authentication, module imports, local fetch and external-request rejection.
 
-This is not a packaged Unreal game or physical iPhone/iPad result. Device layout, safe areas, keyboard, media, background/foreground transitions and App Store distribution remain to be validated.
+The custom Unreal 5.7.4 FPS sample also built and staged as an unsigned arm64 device app and ran in the simulator. Simulator checks exercised native Pause/Resume, movement and aiming, projected health labels and asynchronous scene-capture portraits. These sample adaptations do not add browser textures or depth-occluded world surfaces to the iOS backend. The matching custom engine requires the supplied iOS compiler, Simulator linking, texture-cooking and Metal readback fixes.
+
+No physical iPhone/iPad installation was performed. Device layout, safe areas, keyboard, media, background/foreground transitions, signing and App Store distribution remain to be validated. The iOS release is supplied as source; no mobile trial binaries or playable demo downloads are published.

@@ -12,7 +12,7 @@ Linux, Mac, iOS and Android have separate source implementations. The Windows re
 | --- | --- | --- |
 | [Linux](Linux.md) | CEF through Vulkan; DMA-BUF acceleration implemented | Unreal 5.7.4 packaged game on Ubuntu 24.04 with software transfer; physical GPU acceleration pending |
 | [macOS](Mac.md) | CEF through Metal, Apple Silicon arm64 | Custom Unreal 5.7 editor/game builds and static app checks; independent GPU, resize and bridge test |
-| [iOS/iPadOS](IOS.md) | WKWebView native UIKit overlay | Unreal Development/Shipping plugin compilation and simulator bootstrap/resource checks; packaged game and physical devices pending |
+| [iOS/iPadOS](IOS.md) | WKWebView native UIKit overlay | Custom Unreal 5.7.4 FPS simulator game and unsigned arm64 device staging; Development/Shipping plugin compilation; physical devices pending |
 | [Android](Android.md) | System WebView through Vulkan hardware buffers | Unreal 5.7.4 Development game on API 34 x86-64 emulator; physical devices and Shipping pending |
 
 Linux and mobile require Unreal 5.7 or newer. Mac has been validated against the custom 5.7 engine described on its platform page. The [Mobile APIs](Mobile.md) page explains capability queries, projected labels and registered sounds.
