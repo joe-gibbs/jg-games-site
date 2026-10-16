@@ -15,6 +15,8 @@ Linux, Mac, iOS and Android have separate source implementations. The Windows re
 | [iOS/iPadOS](IOS.md) | WKWebView native UIKit overlay | Custom Unreal 5.7.4 FPS simulator game and unsigned arm64 device staging; Development/Shipping plugin compilation; physical devices pending |
 | [Android](Android.md) | System WebView through Vulkan hardware buffers | Unreal 5.7.4 Development game on API 34 x86-64 emulator; physical devices and Shipping pending |
 
+iOS is a native-overlay source integration with [rendering, input and media limitations](IOS.md#current-limitations). It has no browser-texture composition, atlas capture or depth-occluded world UI. The FPS sample uses projected labels and image readbacks as adaptations. Its custom Unreal 5.7.4 simulator results and unsigned device staging do not establish physical-device readiness, stock-engine compatibility or Unreal 5.8 iOS validation.
+
 Linux and mobile require Unreal 5.7 or newer. Mac has been validated against the custom 5.7 engine described on its platform page. The [Mobile APIs](Mobile.md) page explains capability queries, projected labels and registered sounds.
 
 ## Browser plugins

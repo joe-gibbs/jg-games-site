@@ -15,6 +15,8 @@
 
 Query `UsesNativeOverlay()`, `SupportsTextureComposition()`, `UsesProjectedAnchors()` and `SupportsUnrealAudioRouting()` on the view when choosing how to display the UI. The audio query describes capturing browser audio; registered Unreal sounds are a separate feature.
 
+On iOS, native-overlay presentation also limits clipping, touch pass-through and UI layering. Live portrait images in the FPS sample use asynchronous readback and JPEG delivery through the bridge; they do not enable the desktop texture-composition APIs. See [iOS limitations](IOS.md#current-limitations) before porting texture-heavy or world-space UI.
+
 The request, event and readiness APIs use the same game-side handlers on each platform. Register local HTML and assets through **Trusted Local Mounts**, then use `gameui://app/index.html` as the entry point. Mobile remote browsing is not enabled by this implementation.
 
 ## Projected world labels
