@@ -86,7 +86,7 @@ export default function WebkilnTry() {
         </div>
         <div className="try-offer" ref={pricingRef}>
           <h3>Get Webkiln</h3>
-          <p className="try-price"><span>From</span> US$99.99</p>
+          <p className="try-price"><span>From</span> US$49.99</p>
           <p>Personal and Professional licences on Fab. Regional prices and taxes vary.</p>
           <a className="try-button primary" href={actionUrl('fab', 'evaluate')} target="_blank" rel="noopener noreferrer">Buy on Fab <span aria-hidden="true">↗</span></a>
           <a className="try-text-link" href="#trial">Try it in your project first ↑</a>
