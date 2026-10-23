@@ -243,7 +243,10 @@ html::-webkit-scrollbar-corner,
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-.docs-sidebar button {
+.docs-sidebar button,
+.docs-nav-group a {
+  display: block;
+  box-sizing: border-box;
   width: 100%;
   padding: 0.42rem 0.7rem;
   border: 0;
@@ -255,6 +258,7 @@ html::-webkit-scrollbar-corner,
   transition: color 160ms ease;
 }
 .docs-sidebar button:hover,
+.docs-nav-group a:hover,
 .docs-sidebar button.is-active {
   color: var(--docs-orange-soft);
 }

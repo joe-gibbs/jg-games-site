@@ -46,6 +46,19 @@ const rawDocuments = import.meta.glob("./content/webkiln/*.md", {
   query: "?raw",
 }) as Record<string, string>;
 
+const rawGuides = import.meta.glob("./content/webkiln/guides/*.md", {
+  eager: true,
+  import: "default",
+  query: "?raw",
+}) as Record<string, string>;
+
+const guideLinks = Object.entries(rawGuides)
+  .map(([path, source]) => ({
+    slug: path.split("/").at(-1)!.replace(/\.md$/, ""),
+    title: source.match(/^nav:\s*(.+)$/m)?.[1] ?? "",
+  }))
+  .sort((a, b) => a.slug.localeCompare(b.slug));
+
 const documentOrder = [
   "Overview.md",
   "QuickStart.md",
@@ -330,6 +343,14 @@ function WebkilnDocs() {
                 })}
               </div>
             ))}
+            <div className="docs-nav-group">
+              <span>Guides</span>
+              {guideLinks.map((guide) => (
+                <a href={`/webkiln/guides/${guide.slug}/`} key={guide.slug}>
+                  {guide.title}
+                </a>
+              ))}
+            </div>
           </nav>
         </aside>
 

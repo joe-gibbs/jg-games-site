@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /webkiln/dashboard/
+Disallow: /webkiln/track/
+
+Sitemap: https://jggames.dev/sitemap.xml

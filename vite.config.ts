@@ -1,10 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
+import { guideInputs, webkilnGuides } from "./guides.ts";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), webkilnGuides()],
   build: {
     rollupOptions: {
       input: {
@@ -14,6 +15,7 @@ export default defineConfig({
         webkilnDownloads: resolve(__dirname, "webkiln/downloads/index.html"),
         webkilnTry: resolve(__dirname, "webkiln/try/index.html"),
         webkilnDashboard: resolve(__dirname, "webkiln/dashboard/index.html"),
+        ...guideInputs,
       },
     },
   },

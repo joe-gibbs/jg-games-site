@@ -1,0 +1,55 @@
+.guide-main { padding-top: 72px; }
+.guide-page .guide-main article { width: min(820px, calc(100% - 5rem)); }
+.guide-page .guide-main article > h2 { margin-top: 3.2rem; }
+
+.guide-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 3.5rem 0 2.5rem;
+  padding: 1.6rem 1.8rem;
+  border: 1px solid rgba(244, 91, 10, 0.45);
+  background: var(--docs-panel);
+}
+.guide-cta > div:first-child { display: flex; flex-direction: column; gap: 0.35rem; }
+.docs-main .guide-cta strong { color: var(--docs-ink); font-family: "Marcellus", serif; font-size: 1.35rem; font-weight: 400; }
+.guide-cta span { color: var(--docs-soft); font-size: 0.92rem; line-height: 1.5; }
+.guide-cta-links { display: flex; flex-shrink: 0; align-items: center; gap: 1.1rem; }
+.docs-main article .guide-cta-links a { color: var(--docs-soft); font-size: 0.9rem; text-decoration: none; }
+.docs-main article .guide-cta-links a:hover { color: var(--docs-orange-soft); }
+.docs-main article .guide-cta-links a.guide-cta-primary {
+  padding: 0.75rem 1.15rem;
+  background: var(--docs-orange);
+  color: #fff;
+  font-weight: 500;
+}
+.docs-main article .guide-cta-links a.guide-cta-primary:hover { background: var(--docs-orange-soft); color: #fff; }
+
+.guide-related { padding-top: 1rem; border-top: 1px solid var(--docs-line); }
+.docs-main .guide-related h2 { margin: 1.4rem 0 0.8rem; font-size: 1.5rem; }
+
+.docs-main ul.guide-list { margin: 2.5rem 0; padding: 0; list-style: none; border-top: 1px solid var(--docs-line); }
+.docs-main .guide-list li { margin: 0; padding: 0; border-bottom: 1px solid var(--docs-line); }
+.docs-main .guide-list li::marker { content: ""; }
+.docs-main article .guide-list a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.5rem 0;
+  text-decoration: none;
+}
+.docs-main .guide-list strong { color: var(--docs-ink); font-family: "Marcellus", serif; font-size: 1.45rem; font-weight: 400; }
+.guide-list span { color: var(--docs-soft); line-height: 1.6; }
+.docs-main article .guide-list a:hover strong { color: var(--docs-orange-soft); }
+
+@media (max-width: 900px) {
+  .guide-main { padding-top: 64px; }
+}
+
+@media (max-width: 620px) {
+  .guide-page .guide-main article { width: min(100% - 2rem, 820px); }
+  .guide-cta { flex-direction: column; align-items: flex-start; padding: 1.3rem; }
+  .guide-cta-links { flex-wrap: wrap; }
+  .guide-page .docs-topbar nav { gap: 1rem; }
+}
