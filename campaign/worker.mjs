@@ -11,7 +11,7 @@ export function attribution(params) {
 export function destination(action, engine) {
   if (action === 'fab') return 'https://www.fab.com/listings/0c77209f-2e68-449d-8773-5d0c3d916ede';
   if (action === 'demo') return 'https://downloads.jggames.dev/samples/Webkiln-FPS-Sample.zip';
-  if (action === 'trial' && VERSIONS.has(engine)) return `https://downloads.jggames.dev/trials/Webkiln-1.82-UE${engine}-Win64-Watermarked.zip`;
+  if (action === 'trial' && VERSIONS.has(engine)) return `https://downloads.jggames.dev/trials/Webkiln-1.84-UE${engine}-Win64-Watermarked.zip`;
   return null;
 }
 function device(request) {
