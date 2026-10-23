@@ -2,12 +2,15 @@
 title: How to build Unreal Engine UI with React
 description: Build an Unreal Engine HUD or menu with React and Vite, load it in game with Webkiln, and connect it to Blueprint and C++ with typed requests and events.
 updated: 2026-10-23
+image: /webkiln/guides/fall-of-an-empire-ui.jpg
 nav: React UI
 ---
 
 # How to build Unreal Engine UI with React
 
 React is a good fit for game UI that has a lot of state: inventories, shops, settings, strategy screens and tooltips. This guide puts a React app inside an Unreal Engine game with [Webkiln](/webkiln/), then wires it to Blueprint and C++.
+
+![Fall of an Empire strategy screen with a province panel, event dialog, tooltip and character sheet](/webkiln/guides/fall-of-an-empire-ui.jpg "Fall of an Empire builds its strategy screens, dialogs and tooltips with Webkiln.")
 
 You will:
 
@@ -24,6 +27,8 @@ Webkiln renders the page with Chromium, so anything that works in Chrome works i
 - Unreal Engine 4.25–5.8 on Windows. The [free trial](/webkiln/try/?utm_source=guide&utm_medium=docs&utm_campaign=guides&utm_content=react-ui-unreal-engine#trial) works for everything in this guide.
 - Node.js 20 or newer.
 - Webkiln installed in your project's `Plugins` folder and enabled under **Edit > Plugins**. Turn off Unreal's **Web Browser** and **Web Browser Widget** plugins, because only one Chromium runtime can load at once. The [getting started guide](/webkiln/docs/?doc=quick-start) has screenshots.
+
+![Unreal Plugins window with the Web Browser plugins turned off](/webkiln/docs/plugins-web-browser.png "Turn off Unreal's Web Browser plugins in Edit > Plugins before enabling Webkiln.")
 
 ## 1. Create the React app
 
@@ -130,6 +135,8 @@ In Unreal, open **Project Settings > Plugins > Webkiln > Trusted Local Mounts**.
 
 The app is now available at `gameui://app/index.html`. Webkiln reads it through Unreal's file system, so the same URL works in the editor and in a packaged game. With **Automatically Stage Trusted Local Mounts** on, the folder is packaged for you.
 
+![Webkiln project settings with host app mapped to a project folder](/webkiln/docs/settings.png "Trusted Local Mounts maps the host app to a folder in your project. For a Vite app, use the dist folder.")
+
 ## 5. Show it on the HUD
 
 Create a view from the game-instance subsystem and put it on the viewport. In C++, add `Webkiln` to `PrivateDependencyModuleNames` in your `Build.cs`, then:
@@ -205,6 +212,8 @@ Webkiln.OpenDevTools
 ```
 
 You get the Chromium inspector attached to your live HUD: Elements with live CSS editing, Console, Sources with breakpoints, and Network. Every `gameUI.request` also shows up in **Network** under **Fetch/XHR**, with its payload and response. DevTools is removed from Shipping builds.
+
+![Webkiln Inspector Network tab showing a bridge request to gameui://app/__webkiln/bridge/click](/webkiln/docs/talk-devtools.png "Bridge requests appear in the Network tab, with their payload and response.")
 
 ## Iterating quickly
 

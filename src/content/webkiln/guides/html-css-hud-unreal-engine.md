@@ -2,6 +2,7 @@
 title: How to make a transparent HTML and CSS HUD in Unreal Engine
 description: Build a transparent Unreal Engine HUD in plain HTML, CSS and JavaScript, feed it health and ammo from the game, and keep mouse clicks going to gameplay.
 updated: 2026-10-23
+image: /webkiln/docs/hud-play.jpg
 nav: HTML and CSS HUD
 ---
 
@@ -16,9 +17,13 @@ This guide builds a transparent shooter HUD in plain HTML, CSS and JavaScript wi
 - Mouse clicks that reach the game everywhere except on real buttons.
 - Sharp output at 4K.
 
+![First-person shooter HUD with minimap, compass, health, ammo and enemy health bars over an Unreal level](/webkiln/docs/hud-play.jpg "The HUD in Webkiln's FPS sample is built with HTML and CSS.")
+
 ## Before you start
 
 Install Webkiln in your project's `Plugins` folder and enable it under **Edit > Plugins**. Turn off Unreal's **Web Browser** and **Web Browser Widget** plugins, then restart the editor. The [free trial](/webkiln/try/?utm_source=guide&utm_medium=docs&utm_campaign=guides&utm_content=html-css-hud-unreal-engine#trial) supports Unreal Engine 4.25–5.8 on Windows.
+
+![Unreal Plugins window with the Web Browser plugins turned off](/webkiln/docs/plugins-web-browser.png "Unreal's Web Browser plugins turned off in Edit > Plugins.")
 
 ## 1. Write the HUD page
 
@@ -163,6 +168,8 @@ window.addEventListener('webkiln:runtime-ready', () => {
 
 Open **Project Settings > Plugins > Webkiln > Trusted Local Mounts** and add host `app` pointing at `WebUI`. Restart the editor. The HUD is now at `gameui://app/index.html`, in the editor and in packaged builds.
 
+![Webkiln project settings with host app mapped to the WebUI folder](/webkiln/docs/settings.png "Host app mapped to the WebUI folder under Trusted Local Mounts.")
+
 ## 5. Put it on the screen
 
 Create a transparent view and add it to the viewport. For example, in your player controller's `BeginPlay`:
@@ -232,6 +239,8 @@ If you render the game at a lower internal resolution, **Render Scale** on the v
 ## Check it in DevTools
 
 Press Play, open the console with `~` and run `Webkiln.OpenDevTools`. You can edit `hud.css` live in the Elements panel and see the result over the running game, then copy the changes back to your file.
+
+![FPS HUD with live scene-capture portraits of enemies in HTML cards and health bars pinned above enemies](/webkiln/guides/fps-world-ui.jpg "From the FPS sample: live Unreal scene captures inside HTML cards, and health bars pinned to enemies in the world.")
 
 ## Where to go next
 

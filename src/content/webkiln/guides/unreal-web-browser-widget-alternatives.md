@@ -2,6 +2,7 @@
 title: Unreal Engine Web Browser widget alternatives for game UI
 description: Compare Unreal's built-in Web Browser widget with Chromium plugins, WebView2, native HTML/CSS renderers and commercial middleware for building game UI with web technology.
 updated: 2026-10-23
+image: /webkiln/guides/fps-world-ui.jpg
 nav: Web Browser alternatives
 ---
 
@@ -10,6 +11,8 @@ nav: Web Browser alternatives
 Unreal ships a **Web Browser** widget, and it is the first thing most developers try when they want HTML in their game. It is built for showing web pages: a store page, a news feed, a login screen. Game UI asks for different things. A HUD has to be transparent, let clicks through to gameplay, update every frame without stalling the game, talk to Blueprint and C++ constantly, and ship its files inside the packaged game.
 
 This page compares the main ways to build Unreal UI with HTML, CSS and JavaScript, and what to check before you choose one.
+
+![FPS HUD with live scene-capture portraits of enemies in HTML cards and health bars pinned above enemies](/webkiln/guides/fps-world-ui.jpg "Game UI asks more of a browser than a web page does: a transparent HUD, health bars that follow actors, and live Unreal textures inside the page.")
 
 ## The options
 
@@ -38,6 +41,8 @@ For game UI you will usually end up building the rest yourself:
 These replace or extend Epic's integration with their own CEF runtime and add the game-specific parts. They give you full Chromium, so React, Vue, Tailwind, SVG, canvas and anything else from the web ecosystem works, and you can debug the UI with Chromium DevTools.
 
 Because they load their own copy of Chromium, most of them require you to turn off Unreal's Web Browser plugins. Two CEF runtimes cannot load in one process. Check whether that matters for your project, for example if an editor tool you rely on uses the built-in browser.
+
+![Unreal Plugins window with the Web Browser plugins turned off](/webkiln/docs/plugins-web-browser.png "Chromium plugins usually need Unreal's own Web Browser plugins turned off.")
 
 When you compare these plugins, the details matter more than the feature list:
 
@@ -75,6 +80,8 @@ Unreal's own UI needs no extra runtime and is fully supported by Epic. It is the
 - [Live Unreal textures](/webkiln/docs/?doc=textures), such as render targets, inside the page.
 - Gamepad navigation and Chromium DevTools while the game is running.
 - Local UI folders that are [packaged automatically](/webkiln/docs/?doc=packaging).
+
+![Fall of an Empire strategy screen with a province panel, event dialog, tooltip and character sheet](/webkiln/guides/fall-of-an-empire-ui.jpg "Webkiln in production: the strategy screens of Fall of an Empire.")
 
 Its limits:
 
